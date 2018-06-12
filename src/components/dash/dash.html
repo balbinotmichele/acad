@@ -1,0 +1,86 @@
+<ion-header id="dash-header">
+  <button margin float-right (click)="LogOut()">
+    <ion-icon name="md-person"></ion-icon>
+  </button>
+</ion-header>
+
+<div padding style="margin-top: 50px">
+  <ion-row>
+    <ion-col col-sm-3 col-md-3 col-lg-2 col-xl-2>
+      <ion-card>
+        <ion-card-content text-center>
+          <ion-card-title style="color: #00796B">
+            1
+          </ion-card-title>
+          <p>
+            Hour(s) of testing
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+
+
+    <ion-col col-sm-3 col-md-3 col-lg-2 col-xl-2>
+      <ion-card>
+        <ion-card-content text-center>
+          <ion-card-title style="color: #0277BD">
+            1
+          </ion-card-title>
+          <p>
+            Executed test(s)
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+
+    <ion-col col-sm-3 col-md-3 col-lg-2 col-xl-2>
+      <ion-card>
+        <ion-card-content text-center>
+          <ion-card-title style="color: #E64C25">
+            1
+          </ion-card-title>
+          <p>
+            Current experiment(s)
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+
+  <hr />
+
+  <ion-row>
+    <ion-col col-sm-12 col-md-6 col-lg-4 col-xl-4>
+      <ion-card>
+        <img src="../../assets/imgs/test.png"/>
+        <ion-card-content>
+          <ion-card-title>
+            Tests
+            </ion-card-title>
+          <p>
+            Start testing
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+    <ion-col col-sm-12 col-md-6 col-lg-4 col-xl-4>
+      <ion-card>
+        <img src="../../assets/imgs/experiments.png"/>
+        <ion-card-content>
+          <ion-card-title>
+            Experiments
+            </ion-card-title>
+          <p>
+            Add a new experiment, give a name, set the variables, start testing
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</div>
+
+<ion-footer>
+  <ion-toolbar text-center>
+      <span style="display:inline-block; transform: rotate(180deg);">&copy;</span> Copyleft 2018
+  </ion-toolbar>
+</ion-footer>

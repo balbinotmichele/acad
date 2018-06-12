@@ -1,0 +1,25 @@
+#menuList {
+  background-color: color($colors, grayMenu);
+  color: white;
+
+  button {
+    background-color: inherit;
+    color: inherit;
+  }
+
+  button .item {
+    background-color: inherit;
+    color: inherit;
+    height: 30px;
+  }
+
+  .item-divider {
+    background-color: #363d47;
+    border: 0;
+    color: #aaa;
+  }
+}
+
+#colList {
+  padding: 0;
+}
