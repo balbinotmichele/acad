@@ -5,6 +5,7 @@ import { DashComponent } from "./dash/dash";
 import { CountersComponent } from './counters/counters';
 import { CardsComponent } from './cards/cards';
 import { TestsHomeComponent } from './tests-home/tests-home';
+import { ExperimentsHomeComponent } from './experiments-home/experiments-home';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { TestsHomeComponent } from './tests-home/tests-home';
     DashComponent,
     CountersComponent,
     CardsComponent,
-    TestsHomeComponent
+    TestsHomeComponent,
+    ExperimentsHomeComponent
   ],
   imports: [
     IonicModule
@@ -22,7 +24,8 @@ import { TestsHomeComponent } from './tests-home/tests-home';
     DashComponent,
     CountersComponent,
     CardsComponent,
-    TestsHomeComponent
+    TestsHomeComponent,
+    ExperimentsHomeComponent
   ]
 
   })
