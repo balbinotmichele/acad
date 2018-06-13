@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import firebase from "firebase";
+import { Utente } from '../../types/types';
+import { ServiceDbAcadProvider } from '../../providers/service-db-acad/service-db-acad';
 /**
  * Generated class for the SignupPage page.
  *
@@ -15,14 +17,25 @@ import firebase from "firebase";
   templateUrl: 'signup.html',
 })
 export class SignUpPage {
+  user : Utente = new Utente();
+
+  name:string;
+  surname:string;
   mail:string;
   password: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  view:boolean = true;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private sd : ServiceDbAcadProvider) {}
 
   Create() {
+    this.user.Nome = this.name;
+    this.user.Cognome = this.surname;
+    this.user.Email = this.mail;
+
     firebase.auth().createUserWithEmailAndPassword(this.mail, this.password).then(() => {
-      this.navCtrl.pop();
+      this.sd.AddUtente(this.user);
+      this.navCtrl.setRoot('WelcomePage');
     }).catch(function(error) {
       var errorCode = error.code;
       var errorMessage = error.message;

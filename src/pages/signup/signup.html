@@ -1,7 +1,7 @@
 <ion-content id="back">
     <ion-grid style="height: 100%">
       <ion-row justify-content-center align-items-center style="height: 100%">
-        <ion-card id="login-card" style="height: 410px; width: 500px;">
+        <ion-card id="login-card" style="height: 610px; width: 500px;">
           <ion-card-header>
             <img src="../../assets/imgs/logo.png" style="height: 90px; width: auto;">
           </ion-card-header>
@@ -9,15 +9,25 @@
             <p margin>Create a new account</p>
             <ion-list inset>
               <ion-item>
-                <ion-label floating>Username (email)</ion-label>
+                <ion-label floating>Name</ion-label>
+                <ion-input type="text" value="" [(ngModel)]="this.name"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label floating>Surname</ion-label>
+                <ion-input type="text" value="" [(ngModel)]="this.surname"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label floating>Email</ion-label>
                 <ion-input type="text" value="" [(ngModel)]="this.mail"></ion-input>
               </ion-item>
               <ion-item margin-bottom>
                 <ion-label floating>Password</ion-label>
-                <ion-input type="password" value="" [(ngModel)]="this.password"></ion-input>
+                <ion-input [type]="view ? 'password' : 'text'" value="" [(ngModel)]="this.password" (focus)="this.value = this.password"></ion-input>
+                <ion-icon [name]="view ? 'eye' : 'eye-off'"  item-end style="margin-top: 40px" (click)="view = !view"></ion-icon>
               </ion-item>
             </ion-list>
             <button ion-button color="primary" block style="margin-top:30px" (click)="Create()">Create account</button>
+            <button ion-button color="light" block margin-top (click)="this.navCtrl.pop();">Login</button>
           </ion-card-content>
         </ion-card>
       </ion-row>
