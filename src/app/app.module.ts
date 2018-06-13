@@ -9,6 +9,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { MyApp } from './app.component';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
 import { ComponentsModule } from '../components/components.module';
+import { ServiceDbAcadProvider } from '../providers/service-db-acad/service-db-acad';
+import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -20,6 +23,8 @@ import { ComponentsModule } from '../components/components.module';
     IonicStorageModule.forRoot(),
     HomePageModule,
     ComponentsModule,
+    HttpModule,
+    HttpClientModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -28,7 +33,8 @@ import { ComponentsModule } from '../components/components.module';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    ServiceDbAcadProvider
   ]
 })
 export class AppModule {}
