@@ -23,10 +23,4 @@ export class DashComponent {
       }
     });
   }
-
-  LogOut() {
-    firebase.auth().signOut().then(() => {
-      this.navCtrl.setRoot('WelcomePage');
-    })
-  }
 }
