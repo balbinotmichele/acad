@@ -14,7 +14,9 @@ export class WelcomePage {
 
   tmp:boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
+
+  }
 
   doLogin() {
     firebase.auth().signInWithEmailAndPassword(this.mail, this.password).then(() => {
