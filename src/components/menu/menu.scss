@@ -7,13 +7,15 @@
     background-color: inherit;
     color: inherit;
     font-size: inherit;
+    padding-left: 0;
   }
 
-  button .item {
-    background-color: inherit;
-    color: inherit;
-    height: 30px;
-    font-size: inherit;
+  div .input-wrapper {
+    margin-left: 16px;
+  }
+
+  button :hover {
+    background-color: #363d47;
   }
 
   .item-divider {
