@@ -26,6 +26,19 @@
   }
 }
 
+#buttonUser {
+  background: linear-gradient(to bottom right, #025C88, #026C9F, #037CB7, #038BCE, #039BE5) !important;
+  color: white;
+
+  p {
+    color: white;
+  }
+
+  .item-inner {
+    margin-left: 5px;
+  }
+}
+
 #colList {
   padding: 0;
 }

@@ -16,3 +16,10 @@
     </ion-list>
   </ion-col>
 </ion-row>
+<ion-footer style="color: white">
+  <ion-item style="padding-top: 3px; font-size: 15px" id="buttonUser">
+    <ion-icon name="contact" item-start></ion-icon>
+    {{this.user.Nome}} {{this.user.Cognome}}
+    <p style="font-size: 12px">{{this.user.Email}}</p>
+  </ion-item>
+</ion-footer>

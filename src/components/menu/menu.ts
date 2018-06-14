@@ -1,5 +1,6 @@
-import { NavController } from 'ionic-angular';
-import { Component } from '@angular/core';
+import { Utente } from './../../types/types';
+import { NavController, NavParams, PopoverController } from 'ionic-angular';
+import { Component, Input } from '@angular/core';
 import firebase from 'firebase';
 
 
@@ -8,8 +9,12 @@ import firebase from 'firebase';
   templateUrl: 'menu.html'
 })
 export class MenuComponent {
-
-  constructor(private navCtrl : NavController) {}
+  user : Utente = new Utente();
+  constructor(private navCtrl : NavController, public navParams : NavParams, public popoverCtrl: PopoverController) {
+    this.user.Nome = sessionStorage.getItem('UserName');
+    this.user.Cognome = sessionStorage.getItem('UserSurname');
+    this.user.Email = sessionStorage.getItem('UserEmail');
+  }
 
   LogOut() {
     firebase.auth().signOut().then(() => {
