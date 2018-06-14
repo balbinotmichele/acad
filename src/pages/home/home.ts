@@ -1,6 +1,7 @@
 import firebase from 'firebase';
-import { Component, OnInit } from '@angular/core';
-import { NavController, IonicPage } from 'ionic-angular';
+import { Component, OnInit, Output } from '@angular/core';
+import { NavController, IonicPage, NavParams } from 'ionic-angular';
+import { Utente } from '../../types/types';
 
 
 @IonicPage()
@@ -9,8 +10,12 @@ import { NavController, IonicPage } from 'ionic-angular';
   templateUrl: 'home.html'
 })
 export class HomePage {
+  @Output() user : Utente;
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController, public navParams : NavParams) {
+    this.user = navParams.get('user');
+    // console.log(navParams.get('user'));
+
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         var displayName = user.displayName;
@@ -24,11 +29,5 @@ export class HomePage {
         navCtrl.setRoot('WelcomePage');
       }
     });
-  }
-
-  LogOut() {
-    firebase.auth().signOut().then(() => {
-      this.navCtrl.setRoot('WelcomePage');
-    })
   }
 }
