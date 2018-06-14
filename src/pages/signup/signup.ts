@@ -26,6 +26,8 @@ export class SignUpPage {
 
   view:boolean = true;
 
+  errmsg : string;
+
   constructor(public navCtrl: NavController, public navParams: NavParams, private sd : ServiceDbAcadProvider) {}
 
   Create() {
@@ -33,14 +35,20 @@ export class SignUpPage {
     this.user.Cognome = this.surname;
     this.user.Email = this.mail;
 
-    firebase.auth().createUserWithEmailAndPassword(this.mail, this.password).then(() => {
-      this.sd.AddUtente(this.user);
-      this.navCtrl.setRoot('WelcomePage');
-    }).catch(function(error) {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      alert(errorMessage);
-    });
+    this.sd.AddUtente(this.user)
+    .subscribe(res =>
+      {
+        this.user = res;
+        firebase.auth().createUserWithEmailAndPassword(this.mail, this.password).then(() => {
+          this.navCtrl.setRoot('WelcomePage');
+        }).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          alert(errorMessage);
+        });
+      },
+      errorCode => this.errmsg = errorCode
+    );
   }
 
 }
