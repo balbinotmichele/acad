@@ -35,26 +35,49 @@ app.get("/ListUtenti",function(req,res){
 	})
 });
 
+app.get("/GetUtente",function(req,res){
+  connection= mysql.createConnection(sConnection)	;
+  connection.connect(function(err){
+    if (!err){
+      var sQuery="SELECT * FROM Utente WHERE Email = ?;";
+      var data=[];
+      data.push(req.query.Email);
+      connection.query(sQuery,data,function(err,rows,fileds){
+        if (err)
+            res.sendStatus(500);
+        else
+            res.setHeader('Access-Control-Allow-Origin','*');
+        res.json(rows);
+      })
+    }
+  })
+});
+
 app.put("/AddUtente",function(req,res){
   connection= mysql.createConnection(sConnection)	;
 	connection.connect(function(err){
 		if (!err){
-      var sQuery="INSERT INTO Utente(Nome, Cognome, Email) VALUES ?, ?, ?, ?;";
+      var sQuery="INSERT INTO Utente(Nome, Cognome, Email) VALUES (?, ?, ?);";
       var data=[];
       data.push(req.query.Nome);
       data.push(req.query.Cognome);
       data.push(req.query.Email);
 			connection.query(sQuery,data,function(err,rows,fileds){
-        if (err)
+        if (err) {
+          console.log(err);
           res.sendStatus(500);
-        else
+        }
+        else {
           res.status(200).send({
             status:  200,
             Message: "Ins OK",
             data: 	 req.query
           });
+        }
       })
     }
+    else
+      console.error("Error connecting the database...")
   })
 });
 
