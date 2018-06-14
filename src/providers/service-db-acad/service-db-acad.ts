@@ -26,6 +26,23 @@ export class ServiceDbAcadProvider {
       .map(res => res as Utente[]  );
   }
 
+  GetUtenteByEmail(email : string):Observable<Utente>{
+    if(email != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('Email', email);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/GetUtente", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+
   AddUtente(utente:Utente):Observable<any>{
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json; charset=utf-8');
@@ -37,7 +54,8 @@ export class ServiceDbAcadProvider {
         headers,
         params
       };
-    return this.http.put(this.server + "/AddUtente", null, options)
+    return this.http
+      .put(this.server + "/AddUtente", null, options)
       .map((response: Response) => response)
       .catch(this.handleError);
   }
