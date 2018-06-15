@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Utente } from '../../types/types';
+import { Utente, Sessione, Esperimento } from '../../types/types';
 import { Observable } from 'rxjs/Observable';
 import { Response, Headers, URLSearchParams, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
@@ -60,6 +60,114 @@ export class ServiceDbAcadProvider {
       .catch(this.handleError);
   }
 
+  //#endregion
+
+  //#region counters
+  GetOreEsperimenti(email:string):Observable<number>{
+    if(email != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('Email', email);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/OreEsperimenti", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+
+  GetNumeroTest(email:string):Observable<number>{
+    if(email != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('Email', email);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/NumeroTest", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+
+  GetNumeroEsperimenti(email:string):Observable<number>{
+    if(email != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('Email', email);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/NumeroEsperimenti", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+
+  GetNumeroSessioni(email:string):Observable<number>{
+    if(email != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('Email', email);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/NumeroSessioni", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+  //#endregion
+
+  //#region sessions
+  GetSessioni(email : string):Observable<Sessione[]>{
+    if(email != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('Email', email);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/GetSessioni", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+  //#endregion
+
+  //#region experiments
+  GetEsperimenti(email : string):Observable<Esperimento[]>{
+    if(email != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('Email', email);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/GetEsperimenti", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
   //#endregion
 
   //#region MetodiGenerali
