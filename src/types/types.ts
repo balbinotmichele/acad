@@ -26,6 +26,7 @@ export class Esperimento {
   PrimaScelta : boolean;
   Latenza : boolean;
   Transizioni : boolean;
+  Forma : string;
   CodUtente : number;
 
   constructor() {}
