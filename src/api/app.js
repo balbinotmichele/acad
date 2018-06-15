@@ -19,6 +19,7 @@ app.use(function (req, res, next) {
 	next();
 });
 
+//#region utenti
 app.get("/ListUtenti",function(req,res){
     connection= mysql.createConnection(sConnection)	;
 	connection.connect(function(err){
@@ -80,5 +81,120 @@ app.put("/AddUtente",function(req,res){
       console.error("Error connecting the database...")
   })
 });
+//#endregion
+
+//#region counters
+app.get("/OreEsperimenti", function(req,res){
+  connection= mysql.createConnection(sConnection)	;
+  connection.connect(function(err){
+    if (!err){
+      var sQuery="select IFNULL(SUM((DurataBin * NumeroBin)/3600), 0) OreEsperimenti from Test T, Esperimento E, Utente U WHERE T.CodEsperimento = E.CodEsperimento AND T.Email = U.Email AND U.Email = ?"
+      var data=[];
+      data.push(req.query.Email);
+      connection.query(sQuery,data,function(err,rows,fileds){
+        if (err)
+            res.sendStatus(500);
+        else
+            res.setHeader('Access-Control-Allow-Origin','*');
+        res.json(rows);
+      })
+    }
+  })
+});
+
+app.get("/NumeroTest", function(req,res){
+  connection= mysql.createConnection(sConnection)	;
+  connection.connect(function(err){
+    if (!err){
+      var sQuery="select IFNULL(COUNT(*), 0) NumeroTest from Test T, Utente U WHERE T.Email = U.Email AND U.Email = ?"
+      var data=[];
+      data.push(req.query.Email);
+      connection.query(sQuery,data,function(err,rows,fileds){
+        if (err)
+            res.sendStatus(500);
+        else
+            res.setHeader('Access-Control-Allow-Origin','*');
+        res.json(rows);
+      })
+    }
+  })
+});
+
+app.get("/NumeroEsperimenti", function(req,res){
+  connection= mysql.createConnection(sConnection)	;
+  connection.connect(function(err){
+    if (!err){
+      var sQuery="select IFNULL(COUNT(*), 0) NumeroEsperimenti from Esperimento E, Utente U WHERE E.Email = U.Email AND U.Email = ?"
+      var data=[];
+      data.push(req.query.Email);
+      connection.query(sQuery,data,function(err,rows,fileds){
+        if (err)
+            res.sendStatus(500);
+        else
+            res.setHeader('Access-Control-Allow-Origin','*');
+        res.json(rows);
+      })
+    }
+  })
+});
+
+app.get("/NumeroSessioni", function(req,res){
+  connection= mysql.createConnection(sConnection)	;
+  connection.connect(function(err){
+    if (!err){
+      var sQuery="select IFNULL(COUNT(*), 0) NumeroSessioni from Sessione S, Utente U WHERE S.Email = U.Email AND U.Email = ?"
+      var data=[];
+      data.push(req.query.Email);
+      connection.query(sQuery,data,function(err,rows,fileds){
+        if (err)
+            res.sendStatus(500);
+        else
+            res.setHeader('Access-Control-Allow-Origin','*');
+        res.json(rows);
+      })
+    }
+  })
+});
+//#endregion
+
+//#region sessions
+app.get("/GetSessioni",function(req,res){
+  connection= mysql.createConnection(sConnection)	;
+  connection.connect(function(err){
+    if (!err){
+      var sQuery="SELECT * FROM Sessione WHERE Email = ?;";
+      var data=[];
+      data.push(req.query.Email);
+      connection.query(sQuery,data,function(err,rows,fileds){
+        if (err)
+            res.sendStatus(500);
+        else
+            res.setHeader('Access-Control-Allow-Origin','*');
+        res.json(rows);
+      })
+    }
+  })
+});
+//#endregion
+
+//#region experiments
+app.get("/GetEsperimenti",function(req,res){
+  connection= mysql.createConnection(sConnection)	;
+  connection.connect(function(err){
+    if (!err){
+      var sQuery="SELECT * FROM Esperimento WHERE Email = ?;";
+      var data=[];
+      data.push(req.query.Email);
+      connection.query(sQuery,data,function(err,rows,fileds){
+        if (err)
+            res.sendStatus(500);
+        else
+            res.setHeader('Access-Control-Allow-Origin','*');
+        res.json(rows);
+      })
+    }
+  })
+});
+//#endregion
 
 app.listen(3000);
