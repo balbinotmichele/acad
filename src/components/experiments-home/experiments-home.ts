@@ -1,22 +1,33 @@
-import { Component } from '@angular/core';
+import { ServiceDbAcadProvider } from './../../providers/service-db-acad/service-db-acad';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { Esperimento } from '../../types/types';
+import { NavController } from 'ionic-angular';
 
-/**
- * Generated class for the ExperimentsHomeComponent component.
- *
- * See https://angular.io/api/core/Component for more info on Angular
- * Components.
- */
 @Component({
   selector: 'experiments-home',
   templateUrl: 'experiments-home.html'
 })
 export class ExperimentsHomeComponent {
+  @Output() experimentClick : EventEmitter<Esperimento> = new EventEmitter();
 
-  text: string;
+  experiments: Esperimento[];
+  email : string;
 
-  constructor() {
-    console.log('Hello ExperimentsHomeComponent Component');
-    this.text = 'Hello World';
+  errmsg : string;
+
+  constructor(private sd : ServiceDbAcadProvider, public navCtrl : NavController) {
+    this.email = sessionStorage.getItem('UserEmail');
+    this.sd.GetEsperimenti(this.email)
+      .subscribe(res => {
+        this.experiments = res
+      },
+      errorCode => this.errmsg = errorCode
+    );
+  }
+
+  NewExperiment() {
+    let newExp : Esperimento = new Esperimento();
+    this.experimentClick.emit(newExp);
   }
 
 }
