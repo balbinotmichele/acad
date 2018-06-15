@@ -1,11 +1,11 @@
 import { IonicModule } from "ionic-angular";
 import { NgModule } from "@angular/core";
-import { MenuComponent } from "./menu/menu";
 import { DashComponent } from "./dash/dash";
 import { CountersComponent } from './counters/counters';
 import { CardsComponent } from './cards/cards';
 import { TestsHomeComponent } from './tests-home/tests-home';
 import { ExperimentsHomeComponent } from './experiments-home/experiments-home';
+import { MenuComponent } from "./menu/menu";
 
 @NgModule({
   declarations: [
@@ -14,7 +14,7 @@ import { ExperimentsHomeComponent } from './experiments-home/experiments-home';
     CountersComponent,
     CardsComponent,
     TestsHomeComponent,
-    ExperimentsHomeComponent
+    ExperimentsHomeComponent,
   ],
   imports: [
     IonicModule
@@ -25,7 +25,7 @@ import { ExperimentsHomeComponent } from './experiments-home/experiments-home';
     CountersComponent,
     CardsComponent,
     TestsHomeComponent,
-    ExperimentsHomeComponent
+    ExperimentsHomeComponent,
   ]
 
   })
