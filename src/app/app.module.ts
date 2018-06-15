@@ -7,11 +7,11 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
-import { WelcomePageModule } from '../pages/welcome/welcome.module';
 import { ComponentsModule } from '../components/components.module';
 import { ServiceDbAcadProvider } from '../providers/service-db-acad/service-db-acad';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
+import { ExperimentDetailPageModule } from '../pages/experiment-detail/experiment-detail.module';
 
 @NgModule({
   declarations: [
@@ -22,6 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
     HomePageModule,
+    ExperimentDetailPageModule,
     ComponentsModule,
     HttpModule,
     HttpClientModule
