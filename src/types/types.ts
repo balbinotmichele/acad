@@ -27,6 +27,7 @@ export class Esperimento {
   Latenza : boolean;
   Transizioni : boolean;
   Forma : string;
+  MostraPosizioni : boolean;
   CodUtente : number;
 
   constructor() {}
