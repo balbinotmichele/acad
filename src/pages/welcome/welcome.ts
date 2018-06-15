@@ -1,6 +1,6 @@
 import { ServiceDbAcadProvider } from './../../providers/service-db-acad/service-db-acad';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Keyboard } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 
 import firebase from "firebase";
 import { Utente } from '../../types/types';
@@ -21,11 +21,16 @@ export class WelcomePage {
 
   errmsg : string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private sd : ServiceDbAcadProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private sd : ServiceDbAcadProvider, private loadingCtrl : LoadingController) {
 
   }
 
   doLogin() {
+    const loader = this.loadingCtrl.create({
+      content: "Please wait...",
+      duration: 1500
+    });
+
     firebase.auth().signInWithEmailAndPassword(this.mail, this.password).then(() => {
       this.sd.GetUtenteByEmail(this.mail)
         .subscribe(res => {
@@ -34,7 +39,10 @@ export class WelcomePage {
           sessionStorage.setItem('UserSurname', this.user.Cognome);
           sessionStorage.setItem('UserEmail', this.user.Email);
 
-          this.navCtrl.setRoot('HomePage', {user: this.user});
+          loader.present();
+          loader.onDidDismiss(() => {
+            this.navCtrl.setRoot('HomePage', {user: this.user});
+          });
         },
         errorCode => this.errmsg = errorCode
       );
