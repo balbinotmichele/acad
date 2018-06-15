@@ -1,6 +1,6 @@
 import { Utente } from './../../types/types';
-import { NavController, NavParams, PopoverController } from 'ionic-angular';
-import { Component, Input } from '@angular/core';
+import { NavController, NavParams } from 'ionic-angular';
+import { Component, Output, EventEmitter } from '@angular/core';
 import firebase from 'firebase';
 
 
@@ -9,17 +9,17 @@ import firebase from 'firebase';
   templateUrl: 'menu.html'
 })
 export class MenuComponent {
-  user : Utente = new Utente();
-  constructor(private navCtrl : NavController, public navParams : NavParams, public popoverCtrl: PopoverController) {
-    this.user.Nome = sessionStorage.getItem('UserName');
-    this.user.Cognome = sessionStorage.getItem('UserSurname');
-    this.user.Email = sessionStorage.getItem('UserEmail');
-  }
+  @Output() testChange: EventEmitter<boolean> = new EventEmitter();
+  @Output() cardChange: EventEmitter<boolean> = new EventEmitter();
+  @Output() experimentChange: EventEmitter<boolean> = new EventEmitter();
 
-  LogOut() {
-    firebase.auth().signOut().then(() => {
-      console.log("logout")
-      this.navCtrl.setRoot('WelcomePage');
-    })
+  @Output() logout: EventEmitter<boolean> = new EventEmitter();
+
+  user : Utente = new Utente();
+
+  constructor(private navCtrl : NavController, public navParams : NavParams) {
+    this.user.Nome = sessionStorage.getItem('UserName') || "";
+    this.user.Cognome = sessionStorage.getItem('UserSurname') || "";
+    this.user.Email = sessionStorage.getItem('UserEmail') || "";
   }
 }
