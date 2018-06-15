@@ -1,0 +1,174 @@
+<ion-row style="height: 100%; width: 100%;">
+  <ion-col col-sm-3 col-md-3 col-lg-2 col-xl-2 class="menu-content">
+    <menu style="padding-left: 0; margin-top: 0" (testChange)="onTestClick($event)" (cardChange)="onHomeClick($event)" (experimentChange)="onExperimentClick($event)" (logout)="LogOut()"></menu>
+  </ion-col>
+  <ion-col col-sm-9 col-md-9 col-lg-10 col-xl-10 class="dash-content">
+    <ion-row>
+
+      <ion-col col-sm-12 col-md-12 col-lg-12 col-xl-12>
+        <ion-card>
+          <ion-card-content>
+            <ion-card-title>
+              <ion-list inset>
+                <ion-item>
+                  <ion-input autofocus type="text" value="" [(ngModel)]="this.experiment.NomeEsperimento" placeholder="Experiment name"></ion-input>
+                </ion-item>
+              </ion-list>
+            </ion-card-title>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col col-sm-12 col-md-12 col-lg-6 col-xl-4>
+        <ion-card>
+          <ion-card-content #arena>
+            <ion-card-title>
+              Arena
+            </ion-card-title>
+            <div class="ion-canvas" text-center margin-top>
+              <canvas #canvas></canvas>
+            </div>
+            <ion-list inset>
+              <ion-item>
+                <ion-label>Shape</ion-label>
+                <ion-select interface="popover" [(ngModel)]="this.experiment.Forma" (ionChange)="ChangeShape()">
+                    <ion-option value="rectangle">Rectangle</ion-option>
+                    <ion-option value="square">Square</ion-option>
+                    <ion-option value="circle">Circle</ion-option>
+                  </ion-select>
+              </ion-item>
+              <ion-item margin-top *ngIf="this.experiment.Forma != 'circle'" >
+                <ion-label>Show positions</ion-label>
+                <ion-checkbox [(ngModel)]="this.showPositions" (ionChange)="DrawPositions();"></ion-checkbox>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col col-sm-12 col-md-12 col-lg-12 col-xl-4>
+        <ion-row>
+          <ion-col col-12>
+              <ion-card>
+                <ion-card-content>
+                  <ion-card-title>
+                    Dependent variables
+                  </ion-card-title>
+                    <ion-list inset>
+                      <ion-item>
+                        <ion-label>First choice</ion-label>
+                        <ion-checkbox value="false" [(ngModel)]="this.experiment.PrimaScelta"></ion-checkbox>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Latency</ion-label>
+                        <ion-checkbox value="false" [(ngModel)]="this.experiment.Latenza"></ion-checkbox>
+                      </ion-item>
+                      <ion-item>
+                        <ion-label>Transitions</ion-label>
+                        <ion-checkbox value="false" [(ngModel)]="this.experiment.Transizioni"></ion-checkbox>
+                      </ion-item>
+                    </ion-list>
+                </ion-card-content>
+              </ion-card>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-12>
+              <ion-card>
+                  <ion-card-content>
+                    <ion-card-title>
+                      Positions
+                    </ion-card-title>
+                      <ion-list inset>
+                        <ion-item *ngFor="let item of positions; let i = index; trackBy:trackByFn" >
+                          <ion-input type="text" [(ngModel)]="positions[i]" placeholder="Position name"></ion-input>
+                          <ion-icon item-end name="trash" (click)="positions.splice(i, 1)"></ion-icon>
+                        </ion-item>
+                        <button ion-item (click)="CheckPos()">Add position</button>
+                      </ion-list>
+                  </ion-card-content>
+                </ion-card>
+          </ion-col>
+
+        </ion-row>
+        <ion-row>
+          <ion-col col-12>
+              <ion-card>
+                  <ion-card-content>
+                    <ion-card-title>
+                      Stimuli
+                    </ion-card-title>
+                      <ion-list inset>
+                        <ion-item *ngFor="let item of stimuli; let i = index; trackBy:trackByFn" >
+                          <ion-input type="text" [(ngModel)]="stimuli[i]" placeholder="Stimulus name"></ion-input>
+                          <ion-icon item-end name="trash" (click)="stimuli.splice(i, 1)"></ion-icon>
+                        </ion-item>
+                        <button ion-item (click)="this.stimuli.push('')">Add stimulus</button>
+                      </ion-list>
+                  </ion-card-content>
+                </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+
+      <ion-col col-sm-12 col-md-12 col-lg-12 col-xl-4>
+        <ion-row>
+            <ion-col col-12>
+                <ion-card>
+                    <ion-card-content>
+                      <ion-card-title>
+                        Bin
+                      </ion-card-title>
+                        <ion-list inset>
+                          <ion-item>
+                            <ion-label>Bin number</ion-label>
+                            <ion-input type="number" value="1" min="1" [(ngModel)]="this.experiment.NumeroBin"></ion-input>
+                          </ion-item>
+                          <ion-item>
+                            <ion-label>Bin duration [sec]</ion-label>
+                            <ion-input type="number" value="1" min="1" [(ngModel)]="this.experiment.DurataBin"></ion-input>
+                          </ion-item>
+                        </ion-list>
+                    </ion-card-content>
+                  </ion-card>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col col-12>
+                <ion-card>
+                  <ion-card-content>
+                    <ion-card-title>
+                      Body orientation
+                    </ion-card-title>
+                      <ion-list inset>
+                        <ion-item *ngFor="let item of orientations; let i = index; trackBy:trackByFn" >
+                          <ion-input type="text" [(ngModel)]="orientations[i]" placeholder="Orientation name"></ion-input>
+                          <ion-icon item-end name="trash" (click)="orientations.splice(i, 1)"></ion-icon>
+                        </ion-item>
+                        <button ion-item (click)="this.orientations.push('')">Add orientation</button>
+                      </ion-list>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col col-xl-12 >
+                <ion-card>
+                  <ion-card-content>
+                    <ion-row>
+                      <ion-col col-6>
+                          <button block ion-button color="light">Cancel</button>
+                      </ion-col>
+                      <ion-col col-6>
+                          <button block ion-button>Save</button>
+                      </ion-col>
+                    </ion-row>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-col>
+</ion-row>
