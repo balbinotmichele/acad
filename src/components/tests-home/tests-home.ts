@@ -1,26 +1,25 @@
+import { ServiceDbAcadProvider } from './../../providers/service-db-acad/service-db-acad';
 import { Component } from '@angular/core';
+import { Sessione } from '../../types/types';
 
-/**
- * Generated class for the TestsHomeComponent component.
- *
- * See https://angular.io/api/core/Component for more info on Angular
- * Components.
- */
 @Component({
   selector: 'tests-home',
   templateUrl: 'tests-home.html'
 })
 export class TestsHomeComponent {
+  email : string;
+  sessions : Sessione[];
 
-  text: string;
+  errmsg : string;
 
-  constructor() {
-    console.log('Hello TestsHomeComponent Component');
-    this.text = 'Hello World';
-  }
-
-  method() {
-    alert("asd");
+  constructor(private sd : ServiceDbAcadProvider) {
+    this.email = sessionStorage.getItem('UserEmail');
+    this.sd.GetSessioni(this.email)
+      .subscribe(res => {
+        this.sessions = res
+      },
+      errorCode => this.errmsg = errorCode
+    );
   }
 
 }
