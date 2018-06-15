@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 /**
  * Generated class for the CardsComponent component.
@@ -11,12 +11,9 @@ import { Component } from '@angular/core';
   templateUrl: 'cards.html'
 })
 export class CardsComponent {
+  @Output() testClick : EventEmitter<boolean> = new EventEmitter();
+  @Output() expClick : EventEmitter<boolean> = new EventEmitter();
 
-  text: string;
-
-  constructor() {
-    console.log('Hello CardsComponent Component');
-    this.text = 'Hello World';
-  }
+  constructor() {}
 
 }
