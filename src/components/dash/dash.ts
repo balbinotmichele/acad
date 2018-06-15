@@ -1,26 +1,34 @@
 import firebase from 'firebase';
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { Esperimento } from '../../types/types';
 
 @Component({
   selector: 'dash',
   templateUrl: 'dash.html'
 })
 export class DashComponent {
+  @Input() test : boolean;
+  @Input() experiment : boolean;
+  @Input() card : boolean;
+
+  @Output() testsClick: EventEmitter<boolean> = new EventEmitter();
+  @Output() experimentsClick: EventEmitter<boolean> = new EventEmitter();
+
+  newExperiment : boolean;
+  exp : Esperimento;
 
   constructor(public navCtrl: NavController) {
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
-        var displayName = user.displayName;
-        var email = user.email;
-        var emailVerified = user.emailVerified;
-        var photoURL = user.photoURL;
-        var isAnonymous = user.isAnonymous;
-        var uid = user.uid;
-        var providerData = user.providerData;
       } else {
+        sessionStorage.clear();
         navCtrl.setRoot('WelcomePage');
       }
     });
+  }
+
+  ExperimentClicked(tmp : Esperimento) {
+    this.navCtrl.push('ExperimentDetailPage', {"exp": tmp});
   }
 }

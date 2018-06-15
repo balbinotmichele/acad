@@ -1,11 +1,10 @@
-<ion-header id="dash-header" padding>
-  <counters></counters>
-</ion-header>
+ <counters *ngIf="!this.newExperiment" ></counters>
+
 
 <div id="dash_content" padding>
-  <cards></cards>
-  <!-- <tests-home></tests-home> -->
-  <!-- <experiments-home></experiments-home> -->
+  <cards *ngIf="this.card && !this.test && !this.experiment && !this.newExperiment" (testClick)="this.testsClick.emit(true)" (expClick)="this.experimentsClick.emit(true)"></cards>
+  <tests-home *ngIf="this.test && !this.experiment && !this.card && !this.newExperiment" ></tests-home>
+  <experiments-home *ngIf="this.experiment && !this.test && !this.card && !this.newExperiment" (experimentClick)="ExperimentClicked($event)"></experiments-home>
 </div>
 
 <!-- <ion-footer>
