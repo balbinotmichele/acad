@@ -19,7 +19,9 @@ export class CountersComponent {
   sessions : number;
 
   constructor(private sd : ServiceDbAcadProvider) {
-    this.email = sessionStorage.getItem("UserEmail") || "";
+    let user = JSON.parse(sessionStorage.getItem("User"));
+    this.email = (user == undefined || user == null ? "" : JSON.parse(sessionStorage.getItem("User")).Email);
+    // this.email = sessionStorage.getItem("UserEmail")   || "";
     this.sd.GetOreEsperimenti(this.email)
       .subscribe(res => {
         this.hours = res[0].OreEsperimenti;

@@ -35,8 +35,9 @@ export class WelcomePage {
       this.sd.GetUtenteByEmail(this.mail)
         .subscribe(res => {
           this.user = res[0];
-          sessionStorage.setItem('UserName', this.user.Nome);
-          sessionStorage.setItem('UserSurname', this.user.Cognome);
+          sessionStorage.setItem("User", JSON.stringify(this.user))
+          // sessionStorage.setItem('UserName', this.user.Nome);
+          // sessionStorage.setItem('UserSurname', this.user.Cognome);
           sessionStorage.setItem('UserEmail', this.user.Email);
 
           loader.present();
