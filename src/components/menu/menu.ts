@@ -18,8 +18,7 @@ export class MenuComponent {
   user : Utente = new Utente();
 
   constructor(private navCtrl : NavController, public navParams : NavParams) {
-    this.user.Nome = sessionStorage.getItem('UserName') || "";
-    this.user.Cognome = sessionStorage.getItem('UserSurname') || "";
-    this.user.Email = sessionStorage.getItem('UserEmail') || "";
+    this.user = JSON.parse(sessionStorage.getItem('User'));
+    this.user = (this.user == undefined || this.user == null ? new Utente : JSON.parse(sessionStorage.getItem('User')));
   }
 }
