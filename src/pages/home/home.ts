@@ -26,9 +26,7 @@ export class HomePage {
     }
     this.user = navParams.get('user');
     firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-
-      }
+      if (user) {}
       else {
         navCtrl.setRoot('WelcomePage');
       }
