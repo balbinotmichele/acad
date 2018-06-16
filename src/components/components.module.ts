@@ -6,6 +6,7 @@ import { CardsComponent } from './cards/cards';
 import { TestsHomeComponent } from './tests-home/tests-home';
 import { ExperimentsHomeComponent } from './experiments-home/experiments-home';
 import { MenuComponent } from "./menu/menu";
+import { SessionModalPage } from './session-modal/session-modal';
 
 @NgModule({
   declarations: [
@@ -15,9 +16,13 @@ import { MenuComponent } from "./menu/menu";
     CardsComponent,
     TestsHomeComponent,
     ExperimentsHomeComponent,
+    SessionModalPage
   ],
   imports: [
     IonicModule
+  ],
+  entryComponents : [
+    SessionModalPage
   ],
   exports: [
     MenuComponent,
@@ -26,6 +31,7 @@ import { MenuComponent } from "./menu/menu";
     CardsComponent,
     TestsHomeComponent,
     ExperimentsHomeComponent,
+    SessionModalPage
   ]
 
   })
