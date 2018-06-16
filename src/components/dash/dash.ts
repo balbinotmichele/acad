@@ -1,7 +1,8 @@
 import firebase from 'firebase';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, LoadingController } from 'ionic-angular';
 import { Esperimento } from '../../types/types';
+import { empty } from 'rxjs/Observer';
 
 @Component({
   selector: 'dash',
@@ -18,7 +19,7 @@ export class DashComponent {
   newExperiment : boolean;
   exp : Esperimento;
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController, public loadingCtrl : LoadingController) {
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
       } else {
@@ -29,6 +30,18 @@ export class DashComponent {
   }
 
   ExperimentClicked(tmp : Esperimento) {
-    this.navCtrl.push('ExperimentDetailPage', {"exp": tmp});
+    if(tmp.Email == "") tmp.Email = JSON.parse(sessionStorage.getItem('User')).Email;
+
+    const loader = this.loadingCtrl.create({
+      content: "Please wait...",
+      duration: 300
+    });
+
+    loader.present();
+    loader.onDidDismiss(() => {
+      sessionStorage.setItem("exp", JSON.stringify(tmp));
+      this.navCtrl.push('ExperimentDetailPage', {"exp": tmp});
+    });
+
   }
 }
