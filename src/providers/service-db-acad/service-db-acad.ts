@@ -1,8 +1,8 @@
+import { Utente, Sessione, Esperimento, Posizione, Orientamento, Stimolo } from './../../types/types';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Utente, Sessione, Esperimento } from '../../types/types';
 import { Observable } from 'rxjs/Observable';
-import { Response, Headers, URLSearchParams, RequestOptions } from '@angular/http';
+import { Response } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
@@ -149,6 +149,23 @@ export class ServiceDbAcadProvider {
         .catch(this.handleError);
     }
   }
+
+  AddSessione(sessione : Sessione):Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    const params = new HttpParams()
+      .set('CodSessione', sessione.CodSessione.toString())
+      .set('DataCreazione', sessione.DataCreazione.toString())
+      .set('Email', sessione.Email)
+    const options = {
+        headers,
+        params
+      };
+    return this.http
+      .put(this.server + "/AddSessione", null, options)
+      .map((response: Response) => response)
+      .catch(this.handleError);
+  }
   //#endregion
 
   //#region experiments
@@ -167,6 +184,194 @@ export class ServiceDbAcadProvider {
         .map((response: Response) => response)
         .catch(this.handleError);
     }
+  }
+
+  GetEsperimentoByNome(nome : string):Observable<Esperimento>{
+    if(nome != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('NomeEsperimento', nome);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/GetEsperimentoByNome", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+
+
+  EditAddEsperimento(exp : Esperimento):Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    const params = new HttpParams()
+      .set('CodEsperimento', exp.CodEsperimento.toString())
+      .set('NomeEsperimento', exp.NomeEsperimento)
+      .set('NumeroBin', exp.NumeroBin.toString())
+      .set('DurataBin', exp.DurataBin.toString())
+      .set('PrimaScelta', exp.PrimaScelta.toString())
+      .set('Latenza', exp.Latenza.toString())
+      .set('Transizioni', exp.Transizioni.toString())
+      .set('Forma', exp.Forma)
+      .set('MostraPosizioni', exp.MostraPosizioni.toString())
+      .set('Email', exp.Email)
+    const options = {
+        headers,
+        params
+      };
+    return this.http
+      .put(this.server + "/EditAddEsperimento", null, options)
+      .map((response: Response) => response)
+      .catch(this.handleError);
+  }
+
+  DeleteEsperimento(CodEsperimento : number):Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    const params = new HttpParams()
+      .set('CodEsperimento', CodEsperimento.toString())
+    const options = {
+        headers,
+        params
+      };
+    return this.http
+      .delete(this.server + "/DeleteEsperimento", options)
+      .map((response: Response) => response)
+      .catch(this.handleError);
+  }
+  //#endregion
+
+  //#region positions
+  GetPosizioniByEsperimento(exp : number, email : string):Observable<Posizione[]>{
+    if(email != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('CodEsperimento', exp.toString())
+        .set('Email', email);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/GetPosizioniByEsperimento", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+
+  EditAddPosizioneToEsperimento(exp : number, email : string, pos : Posizione):Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    const params = new HttpParams()
+      .set('CodEsperimento', exp.toString())
+      .set('CodPosizione', (pos.CodPosizione==undefined?"0":pos.CodPosizione.toString()))
+      .set('NomePosizione', pos.NomePosizione)
+      .set('Email', email)
+    const options = {
+        headers,
+        params
+      };
+    return this.http
+      .put(this.server + "/EditAddPosizioneToEsperimento", null, options)
+      .map((response: Response) => response)
+      .catch(this.handleError);
+  }
+  //#endregion
+
+  //#region orientation
+  GetOrientamentiByEsperimento(exp : number, email : string):Observable<Orientamento[]>{
+    if(email != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('CodEsperimento', exp.toString())
+        .set('Email', email);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/GetOrientamentiByEsperimento", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+
+  EditAddOrientamentoToEsperimento(exp : number, email : string, orient : Orientamento):Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    const params = new HttpParams()
+      .set('CodEsperimento', exp.toString())
+      .set('CodOrientamento', orient.CodOrientamento.toString())
+      .set('NomeOrientamento', orient.NomeOrientamento)
+      .set('Email', email)
+    const options = {
+        headers,
+        params
+      };
+    return this.http
+      .put(this.server + "/EditAddOrientamentoToEsperimento", null, options)
+      .map((response: Response) => response)
+      .catch(this.handleError);
+  }
+  //#endregion
+
+  //#region stimuli
+  GetStimoliByEsperimento(exp : number, email : string):Observable<Stimolo[]>{
+    if(email != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('CodEsperimento', exp.toString())
+        .set('Email', email);
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/GetStimoliByEsperimento", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+
+  EditAddStimoloToEsperimento(exp : number, email : string, stim : Stimolo):Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    const params = new HttpParams()
+      .set('CodEsperimento', exp.toString())
+      .set('CodStimolo', stim.CodStimolo.toString())
+      .set('NomeStimolo', stim.NomeStimolo)
+      .set('Email', email)
+    const options = {
+        headers,
+        params
+      };
+    return this.http
+      .put(this.server + "/EditAddStimoloToEsperimento", null, options)
+      .map((response: Response) => response)
+      .catch(this.handleError);
+  }
+  //#endregion
+
+  //#region clear POS
+  ClearPOS(CodEsperimento : number):Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    const params = new HttpParams()
+      .set('CodEsperimento', CodEsperimento.toString())
+    const options = {
+        headers,
+        params
+      };
+    return this.http
+      .delete(this.server + "/ClearPOS", options)
+      .map((response: Response) => response)
+      .catch(this.handleError);
   }
   //#endregion
 
