@@ -39,7 +39,7 @@
               </ion-item>
               <ion-item margin-top *ngIf="this.experiment.Forma != 'circle'" >
                 <ion-label>Show positions</ion-label>
-                <ion-checkbox [(ngModel)]="this.showPositions" (ionChange)="DrawPositions();"></ion-checkbox>
+                <ion-checkbox [(ngModel)]="this.experiment.MostraPosizioni" (ionChange)="DrawPositions();"></ion-checkbox>
               </ion-item>
             </ion-list>
           </ion-card-content>
@@ -48,29 +48,22 @@
 
       <ion-col col-sm-12 col-md-12 col-lg-12 col-xl-4>
         <ion-row>
-          <ion-col col-12>
-              <ion-card>
-                <ion-card-content>
-                  <ion-card-title>
-                    Dependent variables
-                  </ion-card-title>
-                    <ion-list inset>
-                      <ion-item>
-                        <ion-label>First choice</ion-label>
-                        <ion-checkbox value="false" [(ngModel)]="this.experiment.PrimaScelta"></ion-checkbox>
-                      </ion-item>
-                      <ion-item>
-                        <ion-label>Latency</ion-label>
-                        <ion-checkbox value="false" [(ngModel)]="this.experiment.Latenza"></ion-checkbox>
-                      </ion-item>
-                      <ion-item>
-                        <ion-label>Transitions</ion-label>
-                        <ion-checkbox value="false" [(ngModel)]="this.experiment.Transizioni"></ion-checkbox>
-                      </ion-item>
-                    </ion-list>
-                </ion-card-content>
-              </ion-card>
-          </ion-col>
+            <ion-col col-12>
+                <ion-card>
+                  <ion-card-content>
+                    <ion-card-title>
+                      Body orientation
+                    </ion-card-title>
+                      <ion-list inset>
+                        <ion-item *ngFor="let item of orientations; let i = index; trackBy:trackByFn" >
+                          <ion-input type="text" [(ngModel)]="orientations[i].NomeOrientamento" placeholder="Orientation name"></ion-input>
+                          <ion-icon item-end name="trash" (click)="orientations.splice(i, 1)"></ion-icon>
+                        </ion-item>
+                        <button ion-item (click)="NewOrient()">Add orientation</button>
+                      </ion-list>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
         </ion-row>
         <ion-row>
           <ion-col col-12>
@@ -81,10 +74,10 @@
                     </ion-card-title>
                       <ion-list inset>
                         <ion-item *ngFor="let item of positions; let i = index; trackBy:trackByFn" >
-                          <ion-input type="text" [(ngModel)]="positions[i]" placeholder="Position name"></ion-input>
-                          <ion-icon item-end name="trash" (click)="positions.splice(i, 1)"></ion-icon>
+                          <ion-input type="text" [(ngModel)]="positions[i].NomePosizione" placeholder="Position name"></ion-input>
+                          <ion-icon item-end name="trash" (click)="this.positions.splice(i, 1); CheckPos();"></ion-icon>
                         </ion-item>
-                        <button ion-item (click)="CheckPos()">Add position</button>
+                        <button ion-item (click)="NewPos();">Add position</button>
                       </ion-list>
                   </ion-card-content>
                 </ion-card>
@@ -100,10 +93,10 @@
                     </ion-card-title>
                       <ion-list inset>
                         <ion-item *ngFor="let item of stimuli; let i = index; trackBy:trackByFn" >
-                          <ion-input type="text" [(ngModel)]="stimuli[i]" placeholder="Stimulus name"></ion-input>
+                          <ion-input type="text" [(ngModel)]="stimuli[i].NomeStimolo" placeholder="Stimulus name"></ion-input>
                           <ion-icon item-end name="trash" (click)="stimuli.splice(i, 1)"></ion-icon>
                         </ion-item>
-                        <button ion-item (click)="this.stimuli.push('')">Add stimulus</button>
+                        <button ion-item (click)="NewStim();">Add stimulus</button>
                       </ion-list>
                   </ion-card-content>
                 </ion-card>
@@ -138,18 +131,25 @@
                 <ion-card>
                   <ion-card-content>
                     <ion-card-title>
-                      Body orientation
+                      Dependent variables
                     </ion-card-title>
                       <ion-list inset>
-                        <ion-item *ngFor="let item of orientations; let i = index; trackBy:trackByFn" >
-                          <ion-input type="text" [(ngModel)]="orientations[i]" placeholder="Orientation name"></ion-input>
-                          <ion-icon item-end name="trash" (click)="orientations.splice(i, 1)"></ion-icon>
+                        <ion-item>
+                          <ion-label>First choice</ion-label>
+                          <ion-checkbox value="false" [(ngModel)]="this.experiment.PrimaScelta"></ion-checkbox>
                         </ion-item>
-                        <button ion-item (click)="this.orientations.push('')">Add orientation</button>
+                        <ion-item>
+                          <ion-label>Latency</ion-label>
+                          <ion-checkbox value="false" [(ngModel)]="this.experiment.Latenza"></ion-checkbox>
+                        </ion-item>
+                        <ion-item>
+                          <ion-label>Transitions</ion-label>
+                          <ion-checkbox value="false" [(ngModel)]="this.experiment.Transizioni"></ion-checkbox>
+                        </ion-item>
                       </ion-list>
                   </ion-card-content>
                 </ion-card>
-              </ion-col>
+            </ion-col>
         </ion-row>
         <ion-row>
             <ion-col col-xl-12 >
@@ -157,10 +157,10 @@
                   <ion-card-content>
                     <ion-row>
                       <ion-col col-6>
-                          <button block ion-button color="light">Cancel</button>
+                          <button block ion-button color="light" (click)="Cancel()">Cancel</button>
                       </ion-col>
                       <ion-col col-6>
-                          <button block ion-button>Save</button>
+                          <button block ion-button (click)="Save()">Save</button>
                       </ion-col>
                     </ion-row>
                   </ion-card-content>

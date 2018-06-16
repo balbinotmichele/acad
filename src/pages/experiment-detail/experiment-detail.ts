@@ -1,6 +1,7 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Esperimento } from '../../types/types';
+import { Esperimento, Posizione, Orientamento, Stimolo } from '../../types/types';
+import { ServiceDbAcadProvider } from '../../providers/service-db-acad/service-db-acad';
 
 @IonicPage()
 @Component({
@@ -10,25 +11,115 @@ import { Esperimento } from '../../types/types';
 export class ExperimentDetailPage {
   experiment : Esperimento;
 
-  positions : string[] = [""];
-  orientations :string[] = [""];
-  stimuli : string[] = [""];
+  positions : Posizione[] = [new Posizione()];
+  orientations : Orientamento[] = [new Orientamento()];
+  stimuli : Stimolo[] = [new Stimolo()];
 
   showPositions : boolean = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private sd : ServiceDbAcadProvider) {
     this.experiment = new Esperimento();
-    // this.experiment = (this.navParams.get("exp") == undefined) ? new Esperimento() : this.navParams.get("exp");
+  }
+
+
+  ngOnInit() {
+    let tmp = this.navParams.get("exp");
+    if(tmp != undefined)
+      this.experiment = JSON.parse(JSON.stringify(tmp));
+    else
+      this.experiment = JSON.parse(sessionStorage.getItem("exp"));
+
+    this.experiment.MostraPosizioni = this.experiment.MostraPosizioni.toString() == "true";
+
+    if(this.experiment.NomeEsperimento != "") {
+      this.LoadEditExperiment();
+    }
+    else
+      this.ChangeShape();
+
+      console.log(this.experiment);
   }
 
   trackByFn(index: any, item: any) {
     return index;
   }
 
-  CheckPos() {
-    this.positions.push('');
-    if(this.showPositions) this.ChangeShape();
+  NewPos() {
+    this.positions.push(new Posizione());
+    this.CheckPos()
   }
+
+  NewStim() {
+    this.stimuli.push(new Stimolo())
+  }
+
+  NewOrient() {
+    this.orientations.push(new Orientamento())
+  }
+
+  CheckPos() {
+    if(this.experiment.MostraPosizioni) this.ChangeShape();
+  }
+
+  LoadEditExperiment(): any {
+    this.sd.GetPosizioniByEsperimento(this.experiment.CodEsperimento, this.experiment.Email)
+      .subscribe(res => {
+        this.positions = res;
+
+        this.sd.GetOrientamentiByEsperimento(this.experiment.CodEsperimento, this.experiment.Email)
+        .subscribe(res => {
+          this.orientations = res;
+
+          this.sd.GetStimoliByEsperimento(this.experiment.CodEsperimento, this.experiment.Email)
+            .subscribe(res => {
+              this.stimuli = res;
+              this.ChangeShape();
+          });
+        });
+      });
+  }
+
+  Cancel() {
+    this.navCtrl.setRoot('HomePage', {"clicked": "exp"});
+  }
+
+  Save() {
+    this.sd.EditAddEsperimento(this.experiment)
+      .subscribe(res => {
+        this.sd.GetEsperimentoByNome(res.data.NomeEsperimento)
+          .subscribe(res2 => {
+            this.experiment.CodEsperimento = res2[0].CodEsperimento;
+            this.SaveOther();
+          })
+      })
+  }
+
+  SaveOther() {
+    this.sd.ClearPOS(this.experiment.CodEsperimento)
+      .subscribe(res => {
+        for(var i = 0; i< this.positions.length; i++) {
+          var tmp = new Posizione();
+          tmp = this.positions[i];
+          this.sd.EditAddPosizioneToEsperimento(this.experiment.CodEsperimento, this.experiment.Email, tmp)
+            .subscribe();
+        }
+
+        for(var j = 0; j< this.orientations.length; j++) {
+          var tmp2 = new Orientamento();
+          tmp2 = this.orientations[j];
+          this.sd.EditAddOrientamentoToEsperimento(this.experiment.CodEsperimento, this.experiment.Email, tmp2)
+            .subscribe();
+        }
+
+        for(var k = 0; k< this.stimuli.length; k++) {
+          var tmp3 = new Stimolo();
+          tmp3 = this.stimuli[k];
+          this.sd.EditAddStimoloToEsperimento(this.experiment.CodEsperimento, this.experiment.Email, tmp3)
+            .subscribe();
+        }
+        this.navCtrl.setRoot('HomePage', {"clicked": "exp"});
+      });
+    }
 
   onTestClick(test: boolean) {
     this.navCtrl.setRoot('HomePage', {"clicked": "test"});
@@ -66,11 +157,12 @@ export class ExperimentDetailPage {
 
   ionViewDidLoad() : void
   {
-     this._CANVAS 		    = this.canvasEl.nativeElement;
-     this._CANVAS.width  	= this.arenaCa.nativeElement.offsetWidth - this.arenaCa.nativeElement.offsetWidth/4;
-     this._CANVAS.height 	= this.arenaCa.nativeElement.offsetHeight - this.arenaCa.nativeElement.offsetHeight/4;
+    this.ngOnInit();
+    this._CANVAS 		    = this.canvasEl.nativeElement;
+    this._CANVAS.width  	= this.arenaCa.nativeElement.offsetWidth - this.arenaCa.nativeElement.offsetWidth/4;
+    this._CANVAS.height 	= this.arenaCa.nativeElement.offsetHeight - this.arenaCa.nativeElement.offsetHeight/4;
 
-     this.initialiseCanvas();
+    this.initialiseCanvas();
   }
 
   /**
@@ -96,11 +188,11 @@ export class ExperimentDetailPage {
       case "circle": this.drawCircle(); break;
       case "square": this.drawSquare(); break;
     }
-    if(this.showPositions) this.DrawPositions();
+    if(this.experiment.MostraPosizioni || this.experiment.MostraPosizioni.toString() == "true") this.DrawPositions();
   }
 
   DrawPositions() {
-    if(this.showPositions) {
+    if(this.experiment.MostraPosizioni || this.experiment.MostraPosizioni.toString() == "true") {
       let pos = this.positions.length;
       switch(this.experiment.Forma) {
         case "rectangle":
