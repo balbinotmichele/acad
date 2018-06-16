@@ -1,142 +1,156 @@
 import { DateTime } from "ionic-angular/umd";
 
 export class Utente {
-  CodUtente : number;
-  Nome : string;
-  Cognome : string;
-  Email : string;
+  Nome : string = "";
+  Cognome : string = "";
+  Email : string = "";
 
-  constructor() {}
+  constructor() {
+    this.Nome = "";
+    this.Cognome = "";
+    this.Email = "";
+  }
 }
 
 export class Soggetto {
-  CodSoggetto : number;
-  NomeSoggetto : string;
-  Descrizione : string;
-  CodUtente : number;
+  CodSoggetto : number = 0;
+  NomeSoggetto : string = "";
+  Descrizione : string = "";
+  Email : string = "";
 
-  constructor() {}
+  constructor() {
+
+  }
 }
 
 export class Esperimento {
-  CodEsperimento : number;
-  NomeEsperimento : string;
-  NumeroBin : number;
-  DurataBin: number;
-  PrimaScelta : boolean;
-  Latenza : boolean;
-  Transizioni : boolean;
-  Forma : string;
-  MostraPosizioni : boolean;
-  CodUtente : number;
+  CodEsperimento : number = 0;
+  NomeEsperimento : string = "";
+  NumeroBin : number = 0;
+  DurataBin: number = 0;
+  PrimaScelta : boolean  = false;
+  Latenza : boolean = false;
+  Transizioni : boolean = false;
+  Forma : string = "";
+  MostraPosizioni : boolean = false;
+  Email : string = "";
 
   constructor() {}
 }
 
 export class Orientamento {
-  CodOrientamento : number;
-  NomeOrientamento : string;
-  CodEsperimento : number;
-  CodUtente : number;
+  CodOrientamento : number = 0;
+  NomeOrientamento : string = "";
+  CodEsperimento : number = 0;
+  Email : string = "";
 
-  constructor() {}
+  constructor() {
+    this.CodOrientamento = 0;
+    this.NomeOrientamento = "";
+  }
 }
 
 export class VariabileIndipendente {
-  CodVariabile : number;
-  NomeVariabile : string;
-  TipoVariabile : string;
-  CodUtente : number;
+  CodVariabile : number = 0;
+  NomeVariabile : string = "";
+  TipoVariabile : string = "";
+  Email : string = "";
 
   constructor() {}
 }
 
 export class Posizione {
-  CodPosizione : number;
-  NomePosizione : string;
-  CodEsperimento : number;
-  CodUtente : number;
+  CodPosizione : number = 0;
+  NomePosizione : string = "";
+  CodEsperimento : number = 0;
+  Email : string = "";
 
-  constructor() {}
+  constructor() {
+    this.CodPosizione = 0;
+    this.NomePosizione = "";
+  }
 }
 
 export class Stimolo {
-  CodStimolo : number;
-  NomeStimolo : string;
-  CodEsperimento : number;
-  CodUtente : number;
+  CodStimolo : number = 0;
+  NomeStimolo : string = "";
+  CodEsperimento : number = 0;
+  Email : string = "";
 
-  constructor() {}
+  constructor() {
+    this.CodStimolo = 0;
+    this.NomeStimolo = "";
+  }
 }
 
 export class Sessione {
-  CodSessione : string;
-  DataCreazione : DateTime;
-  CodUtente : number;
+  CodSessione : string = "";
+  DataCreazione : string = "";
+  Email : string = "";
 
   constructor() {}
 }
 
 export class Test {
-  CodSoggetto : number;
-  CodEsperimento : number;
-  DataEsperimento : DateTime;
-  DataInserimento : DateTime;
-  PrimaScelta : string;
-  Latenza : number;
-  Transizioni : number;
-  CodSessione : number;
-  CodUtente : number;
+  CodSoggetto : number = 0;
+  CodEsperimento : number = 0;
+  DataEsperimento : string = "";
+  DataInserimento : string = "";
+  PrimaScelta : string = "";
+  Latenza : number = 0;
+  Transizioni : number = 0;
+  CodSessione : number = 0;
+  Email : string = "";
 
   constructor() {}
 }
 
 export class Orientato {
-  CodSoggetto : number;
+  CodSoggetto : number = 0;
   CodEsperimento : number;
   CodOrientamento : number;
-  Tempo : number;
-  CodUtente : number;
+  Tempo : number = 0;
+  Email : string = "";
 
   constructor() {}
 }
 
 export class Posizionato {
-  CodSoggetto : number;
-  CodEsperimento : number;
-  CodPosizione : number;
-  Tempo : number;
-  CodUtente : number;
+  CodSoggetto : number = 0;
+  CodEsperimento : number = 0;
+  CodPosizione : number = 0;
+  Tempo : number = 0;
+  Email : string = "";
 
   constructor() {}
 }
 
 export class Stimolato {
-  CodSoggetto : number;
-  CodEsperimento : number;
-  CodPosizione : number;
-  CodStimolo : number;
-  CodUtente : number;
+  CodSoggetto : number = 0;
+  CodEsperimento : number = 0;
+  CodPosizione : number = 0;
+  CodStimolo : number = 0;
+  Email : string = "";
 
   constructor() {}
 }
 
 export class Dipendato {
-  CodSoggetto : number;
-  CodEsperimento : number;
-  CodVariabile : number;
-  Valore : string;
-  CodUtente : number;
+  CodSoggetto : number = 0;
+  CodEsperimento : number = 0;
+  CodVariabile : number = 0;
+  Valore : string = "";
+  Email : string = "";
 
   constructor() {}
 }
 
 export class Bin {
-  CodSoggetto : number;
-  CodEsperimento : number;
-  NumBin : number;
-  Note : string;
-  CodUtente : number;
+  CodSoggetto : number = 0;
+  CodEsperimento : number = 0;
+  NumBin : number = 0;
+  Note : string = "";
+  Email : string = "";
 
   constructor() {}
 }
