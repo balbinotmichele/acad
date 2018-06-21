@@ -16,7 +16,7 @@ import { SessionModalPage } from './session-modal/session-modal';
     CardsComponent,
     TestsHomeComponent,
     ExperimentsHomeComponent,
-    SessionModalPage
+    SessionModalPage,
   ],
   imports: [
     IonicModule
@@ -31,7 +31,7 @@ import { SessionModalPage } from './session-modal/session-modal';
     CardsComponent,
     TestsHomeComponent,
     ExperimentsHomeComponent,
-    SessionModalPage
+    SessionModalPage,
   ]
 
   })

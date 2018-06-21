@@ -1,17 +1,35 @@
 <ion-row>
-  <ion-col col-sm-6 col-md-6 col-lg-4 col-xl-3>
+  <ion-col col-sm-12 col-md-12 col-lg-6 col-xl-3>
     <ion-card style="padding: 0" class="sessioncard">
-        <button ion-item padding class="session" text-center>
+        <button ion-item padding class="session" text-center (click)="NewSession();" style="background-color: #C8E6C9">
           <ion-icon name="add"></ion-icon>
           <br>
           Start a new session
         </button>
     </ion-card>
+  </ion-col>
+  <ion-col col-sm-12 col-md-12 col-lg-6 col-xl-3>
     <ion-card style="padding: 0" class="sessioncard" *ngFor="let item of sessions; let i = index" >
-      <button ion-item padding class="session" text-center>
-        Session {{i}}
-        <p>{{item.DataCreazione}}</p>
-      </button>
-  </ion-card>
+      <ion-card-content>
+        <button ion-item padding class="session" text-center (click)="OpenSession(item)">
+          Session "{{item.NomeSessione}}"
+          <p>{{this.FormatData(item.DataCreazione)}}</p>
+        </button>
+      </ion-card-content>
+      <ion-row text-right>
+          <!-- <ion-col col-3>
+            <button ion-button icon-start clear small (click)="CopyExperiment(item);">
+              <ion-icon name="copy"></ion-icon>
+              <div>Copy</div>
+            </button>
+          </ion-col> -->
+          <ion-col col-3 push-8>
+            <button ion-button icon-start clear small (click)="DeleteSession(item, i);">
+              <ion-icon name="trash"></ion-icon>
+              <div>Delete</div>
+            </button>
+          </ion-col>
+        </ion-row>
+    </ion-card>
   </ion-col>
 </ion-row>

@@ -12,6 +12,7 @@ import { ServiceDbAcadProvider } from '../providers/service-db-acad/service-db-a
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { ExperimentDetailPageModule } from '../pages/experiment-detail/experiment-detail.module';
+import { TestDetailPageModule } from '../pages/test-detail/test-detail.module';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { ExperimentDetailPageModule } from '../pages/experiment-detail/experimen
     IonicStorageModule.forRoot(),
     HomePageModule,
     ExperimentDetailPageModule,
+    TestDetailPageModule,
     ComponentsModule,
     HttpModule,
     HttpClientModule

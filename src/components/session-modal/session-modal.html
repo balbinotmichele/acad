@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-navbar padding-left>
+    <h3>Select the experiment for this session</h3>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <ion-row>
+      <ion-col col-12>
+        <ion-item>
+          <ion-label>Name the session</ion-label>
+          <ion-input autofocus type="text" [(ngModel)]="this.nomeSessione"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Select experiment</ion-label>
+          <ion-select interface="popover" [(ngModel)]="this.exp">
+            <ion-option *ngFor="let item of expList"  value="{{item.NomeEsperimento}}">{{item.NomeEsperimento}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-card style="margin-top: 40px" padding>
+          <p style="font-size: 17px">Independent variables (e.g. breed, age, sex etc.)</p>
+          <ion-item *ngFor="let item of indieVar; let i = index">
+            <ion-label>Name</ion-label>
+            <ion-input autofocus type="text" [(ngModel)]="item.NomeVariabile"></ion-input>
+            <ion-select interface="popover" [(ngModel)]="item.TipoVariabile" placeholder="Type" margin-right>
+              <ion-option value="text">Text</ion-option>
+              <ion-option value="number">Number</ion-option>
+              <ion-option value="boolean">Boolean (true/false)</ion-option>
+            </ion-select>
+            <ion-icon item-end name="trash" (click)="indieVar.splice(i, 1)" margin-left></ion-icon>
+          </ion-item>
+          <div text-right margin-top>
+            <button ion-button (click)="NewVariable()" item-end>Add variable</button>
+          </div>
+        </ion-card>
+        <div text-right margin-top>
+          <button ion-button color="light" (click)="Cancel()">Cancel</button>
+          <button ion-button color="default" [disabled]="this.DisableStart()" item-end (click)="Start()">Start</button>
+        </div>
+      </ion-col>
+    </ion-row>
+</ion-content>

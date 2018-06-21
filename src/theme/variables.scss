@@ -34,11 +34,16 @@ $app-direction: ltr;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #488aff,
-  secondary:  #32db64,
-  danger:     #f53d3d,
+  // primary:    #488aff,
+  primary:    #01579B,
+  // secondary:  #32db64,
+  secondary:  #388E3C,
+  // danger:     #f53d3d,
+  danger:     #D84315,
+  danger2:     #FF9800,
   light:      #f4f4f4,
   dark:       #222,
+  black:        #000,
 
   grayMenu:   #3f4652,
   graySelected:#363d47,
@@ -95,8 +100,9 @@ $colors: (
 @font-face {
   font-family: Montserrat;
   src: url("https://fonts.googleapis.com/css?family=Montserrat");
-  }
+}
 
-  body, span, div, button, h1, h2, h3, h4, h5, h6, p, ion-item, ion-title, ion-label {
+body, span, div, button, h1, h2, h3, h4, h5, h6, p, ion-item, ion-title, ion-label, ion-card {
   font-family: 'Montserrat' !important;
-  }
+}
+

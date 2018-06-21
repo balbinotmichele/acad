@@ -1,3 +1,20 @@
 page-test-detail {
+  background-color:  color($colors, grayDash);
+  overflow: auto;
+}
 
+.timer {
+  ion-card-title {
+    font-size: 45px !important
+  }
+}
+
+.large {
+  width: 100%;
+  visibility: visible;
+}
+
+.null {
+  width: 0px;
+  visibility: hidden;
 }

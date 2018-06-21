@@ -9,7 +9,7 @@ import { empty } from 'rxjs/Observer';
 @Component({
   selector: 'page-welcome',
   templateUrl: 'welcome.html',
-  styles: ['welcome.scss']
+  // styles: ['welcome.scss']
 })
 export class WelcomePage {
   mail:string;
@@ -38,7 +38,7 @@ export class WelcomePage {
           sessionStorage.setItem("User", JSON.stringify(this.user))
           // sessionStorage.setItem('UserName', this.user.Nome);
           // sessionStorage.setItem('UserSurname', this.user.Cognome);
-          sessionStorage.setItem('UserEmail', this.user.Email);
+          // sessionStorage.setItem('UserEmail', this.user.Email);
 
           loader.present();
           loader.onDidDismiss(() => {

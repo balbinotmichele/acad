@@ -19,7 +19,7 @@ export class HomePage {
   choice : string;
 
   constructor(public navCtrl: NavController, public navParams : NavParams, public loadingCtrl : LoadingController) {
-    if(sessionStorage.getItem('UserEmail') == null || sessionStorage.getItem('UserEmail') == undefined) {
+    if(sessionStorage.getItem('User') == null || sessionStorage.getItem('User') == undefined) {
         firebase.auth().signOut().then(() => {
           this.navCtrl.setRoot('WelcomePage');
         })

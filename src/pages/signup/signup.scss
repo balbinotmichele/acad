@@ -48,12 +48,12 @@ ion-grid {
 }
 
 #back {
-  position: relative;
-  background: url('../../assets/imgs/rep_background.png') no-repeat transparent;
-  background-size: cover;
-  z-index: 1;
-  background-repeat: repeat-x;
-  animation: animatedBackground 60s linear infinite;
+  // position: relative;
+  // background: url('../../assets/imgs/rep_background.png') no-repeat transparent;
+  // background-size: cover;
+  // z-index: 1;
+  // background-repeat: repeat-x;
+  // animation: animatedBackground 60s linear infinite;
 }
 
 @keyframes animatedBackground {

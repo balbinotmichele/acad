@@ -8,6 +8,6 @@ import { TestDetailPage } from './test-detail';
   ],
   imports: [
     IonicPageModule.forChild(TestDetailPage),
-  ],
+  ]
 })
 export class TestDetailPageModule {}

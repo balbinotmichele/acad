@@ -1,18 +1,269 @@
-<!--
-  Generated template for the TestDetailPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>TestDetail</ion-title>
-  </ion-navbar>
-
-</ion-header>
-
-
-<ion-content padding>
-
-</ion-content>
+<ion-row style="height: 100%; margin: 0; padding: 0">
+  <ion-col col-sm-12 col-sm-12 col-lg-4 col-xl-3 style="margin: 0; padding: 0">
+    <ion-row style="margin: 0; padding: 0">
+      <ion-col>
+        <ion-card>
+          <button margin ion-button (click)="this.navCtrl.setRoot('HomePage', {'clicked': 'test'})" margin-left>&larr; Back</button>
+        </ion-card>
+      </ion-col>
+    </ion-row> <!-- back style -->
+    <ion-row style="margin: 0; padding: 0">
+      <ion-col>
+        <ion-card>
+          <ion-card-content>
+            <ion-card-title>
+              Session
+            </ion-card-title>
+            <p>Session: <b>{{this.session.NomeSessione}}</b></p>
+            <p>Esperiment: <b> {{this.exp.NomeEsperimento}}</b></p>
+            <p>Tests: <b>{{this.tests.length}}</b></p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row> <!--Row Session/Exp/Tests-->
+    <ion-row style="margin: 0; padding: 0">
+      <ion-col>
+        <ion-card>
+          <ion-card-content>
+            <ion-card-title>
+              Subjects
+            </ion-card-title>
+            <ion-toolbar>
+              <ion-input type="text" [(ngModel)]="searchBar" placeholder="Search..." (input)="Search()"></ion-input>
+            </ion-toolbar>
+            <ion-list style="max-height: 260px; overflow: auto" margin-bottom >
+              <ion-item *ngFor="let item of searchedSubjects; let i = index">
+                <button [ngStyle]="{'background-color': IsTested(item.CodSoggetto) ? '#C8E6C9' : 'white'}" ion-item (click)="SelectedSubject(item, i)" [disabled]="newSubject || testing || this.end">
+                  <b>{{ item.NomeSoggetto }}</b>
+                  <p>{{item.Descrizione}}</p>
+                </button>
+                <ion-icon item-end name="checkmark" *ngIf="selectedSubject && selectedSubject.NomeSoggetto == item.NomeSoggetto"></ion-icon>
+              </ion-item>
+            </ion-list>
+            <div text-right>
+              <button ion-button (click)="NewSoggetto()" [disabled]="newSubject || testing" >Add subject</button>
+            </div>
+            <div *ngIf="newSubject">
+              <hr>
+              <ion-item>
+                <ion-input type='text' autofocus [(ngModel)]="newSubject.NomeSoggetto" placeholder='Subject name'></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-textarea type='text' [(ngModel)]="newSubject.Descrizione" placeholder='Subject description'></ion-textarea>
+              </ion-item>
+              <div text-right>
+                <button ion-button color="light" (click)="newSubject = undefined">Cancel</button>
+                <button ion-button (click)="AddSoggetto()" [disabled]="newSubject.NomeSoggetto == ''">Save</button>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row> <!--Row subjects list-->
+    <ion-row *ngIf="selectedSubject" style="margin: 0; padding: 0">
+      <ion-col>
+        <ion-card>
+          <ion-card-content>
+            <ion-card-title>
+              Subject "{{selectedSubject.NomeSoggetto}}"
+            </ion-card-title>
+            <div padding>
+              <!-- <button ion-button block color="secondary" (click)="EditSoggetto()" *ngIf="selectedSubject" style="margin-bottom: 12px">Edit subject</button> -->
+              <button ion-button block color="danger2" (click)="DeleteTestSoggetto()" [disabled]="DisableDeleteTest() || newSubject || testing || !this.end" *ngIf="selectedSubject" style="margin-bottom: 12px">Delete subject's test (this session only)</button>
+              <button ion-button block color="danger" (click)="DeleteSoggetto()" [disabled]="newSubject || testing" *ngIf="selectedSubject">Delete subject (all the sessions)</button>
+            </div>
+            <div *ngIf="edit">
+              <hr>
+              <ion-item>
+                <ion-input type='text' [(ngModel)]="editSubject.NomeSoggetto" placeholder='Subject name'></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-textarea type='text' [(ngModel)]="editSubject.Descrizione" placeholder='Subject description'></ion-textarea>
+              </ion-item>
+              <div text-right>
+                <button ion-button color="light" (click)="edit = false; this.editSubject = undefined;">Cancel</button>
+                <button ion-button (click)="SaveEdit()" [disabled]="editSubject.NomeSoggetto == ''">Save</button>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row> <!--Row selected subject-->
+  </ion-col> <!--Col always visible-->
+  <ion-col col-sm-12 col-sm-12 col-lg-8 col-xl-9 *ngIf="!selectedSubject" text-center style="height:100%; margin: 0; padding: 0">
+    <ion-row justify-content-center align-items-center style="height: 100%;">
+      <ion-col>
+        <div style="height: 100%; vertical-align: middle; font-size: 30px">
+          Select a subject to start testing
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-col> <!--Col if no subject is selected-->
+  <ion-col col-sm-12 col-sm-12 col-lg-8 col-xl-9 *ngIf="selectedSubject" style="margin: 0; padding: 0">
+    <ion-row>
+      <ion-col col-sm-12 col-sm-12 col-lg-12 col-xl-4>
+        <ion-row>
+          <ion-col>
+            <ion-card>
+              <ion-card-content>
+                <ion-card-title>
+                  Position - Stimulus
+                </ion-card-title>
+                <p>To each position may correspond one or more stimuli and viceversa. Add here the pairs for this subject</p>
+                <div *ngFor="let item of posStim; let i = index">
+                  <ion-item *ngIf="item.CodSoggetto == selectedSubject.CodSoggetto" margin-top>
+                    <ion-select interface="popover" style="width: 50%" placeholder="Position" [(ngModel)]="item.CodPosizione" [disabled]="newSubject || testing">
+                      <ion-option ngDefaultControl *ngFor="let pos of positions" value="{{pos.CodPosizione}}"  >{{pos.NomePosizione}}</ion-option>
+                    </ion-select>
+                    <ion-select  interface="popover" style="width: 50%" placeholder="Stimulus" [(ngModel)]="item.CodStimolo" [disabled]="newSubject || testing">
+                      <ion-option ngDefaultControl *ngFor="let stim of stimuli" value="{{stim.CodStimolo}}">{{stim.NomeStimolo}}</ion-option>
+                    </ion-select>
+                    <ion-icon item-end color="danger" name="trash" (click)="posStim.splice(i, 1)" margin-left [hidden]="newSubject || testing"></ion-icon>
+                  </ion-item>
+                </div>
+                <div text-right>
+                  <button ion-button (click)="AddStimPos()" [disabled]="newSubject || testing" margin-top>Add Position-Stimulus pair</button>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row><!-- position stimuli-->
+        <ion-row *ngIf="this.indieVar">
+          <ion-col>
+            <ion-card>
+              <ion-card-content>
+                <ion-card-title>
+                  Independent variables
+                </ion-card-title>
+                <p>Each subject is characterised by one or more variables. Set here their values</p>
+                <div *ngFor="let item of indieVar">
+                  <ion-item *ngIf="item.TipoVariabile == 'text' || item.TipoVariabile == 'number'" margin-top>
+                    <ion-label>{{item.NomeVariabile}}</ion-label>
+                    <ion-input type="item.TipoVariabile" [disabled]="newSubject || testing" [(ngModel)]="this.dipendato[selectedSubject.CodSoggetto.toString() + this.session.CodSessione.toString() + item.CodVariabile.toString()].Valore"></ion-input>
+                  </ion-item>
+                  <ion-item *ngIf="item.TipoVariabile == 'boolean'">
+                    <ion-label>{{item.NomeVariabile}}</ion-label>
+                    <ion-checkbox [(ngModel)]="this.dipendato[selectedSubject.CodSoggetto.toString() + this.session.CodSessione.toString() + item.CodVariabile.toString()].Valore"></ion-checkbox>
+                  </ion-item>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row><!-- indie var -->
+      </ion-col> <!--Col stim pos indie var bin -->
+      <ion-col col-sm-12 col-sm-12 col-lg-12 col-xl-4>
+        <ion-row>
+          <ion-col>
+            <ion-card class="timer" text-center>
+              <ion-card-content>
+                <ion-card-title>
+                  {{this.timer}}
+                </ion-card-title>
+                <button ion-button block (click)="StartTest()" [disabled]="newSubject" *ngIf="(!pause && !testing && !this.end) || (pause && testing && !this.end)" >Start Test</button>
+                <button ion-button block (click)="PauseTest()" [disabled]="newSubject" *ngIf="(!pause && testing && !this.end)">Pause Test</button>
+                <button ion-button block color="danger2" (click)="ResetTest()" [disabled]="newSubject || !pause" *ngIf="(!pause && testing && !this.end) || (pause && testing && !this.end)">Reset Test</button>
+              </ion-card-content>
+            </ion-card>
+          </ion-col>
+        </ion-row> <!--timer-->
+        <ion-row>
+            <ion-col>
+              <ion-card>
+                <ion-card-content>
+                  <ion-card-title>
+                    Positioned
+                  </ion-card-title>
+                  <p>The subject occupies a position for an amount of time, click on the relative position and that time will be calculated, shown aside and then stored</p>
+                  <ion-item *ngFor="let item of positions">
+                    <button text-center item-start ion-button  style="width: 70%; height: 40px;" [disabled]="newSubject || !testing || pause" (click)="ChangePosition(item)">{{item.NomePosizione}}</button>
+                    <p text-center style="width: 30%; margin-left: 50%">{{positioned[selectedSubject.CodSoggetto.toString() + this.session.CodSessione.toString() + item.CodPosizione.toString()].Tempo}}</p>
+                  </ion-item>
+                  <!-- <button margin-top ion-button *ngFor="let item of positions" style="height: 100px; min-width: 25%;" [ngStyle]="{'width': (97/positions.length)+'%'}">{{item.NomePosizione}}</button>
+                  <div *ngFor="let item of positioned">
+                    <p float-left text-center style="margin-top: 8px; margin-bottom: 10px; min-width: 25%;" [ngStyle]="{'width': (97/positions.length)+'%'}" *ngIf="item.CodSoggetto == selectedSubject.CodSoggetto">{{item.Tempo}}</p>
+                  </div> -->
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+        </ion-row> <!-- positioned -->
+        <ion-row>
+            <ion-col>
+              <ion-card>
+                <ion-card-content>
+                  <ion-card-title>
+                    Oriented
+                  </ion-card-title>
+                  <p>The subject orients itself to one stimulus or another for an amount of time, click on the relative orientation and that time will be calculated, shown below and then stored</p>
+                  <ion-item *ngFor="let item of orient">
+                    <button text-center item-start ion-button  style="width: 70%; height: 40px;" [disabled]="newSubject || !testing || pause" (click)="ChangeOrient(item)">{{item.NomeOrientamento}}</button>
+                    <p text-center style="width: 30%; margin-left: 50%">{{oriented[selectedSubject.CodSoggetto.toString() + this.session.CodSessione.toString() + item.CodOrientamento.toString()].Tempo}}</p>
+                  </ion-item>
+                  <!-- <button margin-top ion-button *ngFor="let item of orient" style="height: 100px;" [ngStyle]="{'width': (95/orient.length)+'%'}">{{item.NomeOrientamento}}</button>
+                  <div *ngFor="let item of oriented">
+                    <p float-left text-center style="margin-top: 8px; margin-bottom: 10px" [ngStyle]="{'width': (100/orient.length)+'%'}" *ngIf="item.CodSoggetto == selectedSubject.CodSoggetto">{{item.Tempo}}</p>
+                  </div> -->
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+        </ion-row> <!-- oriented -->
+      </ion-col> <!--Col timer positioned oriented-->
+      <ion-col col-sm-12 col-sm-12 col-lg-12 col-xl-4>
+          <ion-row>
+            <ion-col>
+              <ion-card style="height: 400px">
+                <ion-card-content #arena style="height: 100%;">
+                  <ion-card-title>
+                    Arena
+                  </ion-card-title>
+                  <div class="ion-canvas" text-center margin-top>
+                    <canvas #canvas></canvas>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row> <!--arena-->
+          <ion-row>
+              <ion-col>
+                <ion-card>
+                  <ion-card-content>
+                    <ion-card-title>
+                      Bin
+                    </ion-card-title>
+                      <ion-segment *ngIf="this.bins"  [(ngModel)]="selectedBinNum" style="width: 100%">
+                        <div *ngFor="let item of bins" [class.large]="item.CodSoggetto == selectedSubject.CodSoggetto" [class.null]="item.CodSoggetto != selectedSubject.CodSoggetto">
+                          <ion-segment-button (click)="this.selectedBinNum=item.CodSoggetto.toString()+item.NumBin" [disabled]="newSubject" style="width: 100%" *ngIf="item.CodSoggetto == selectedSubject.CodSoggetto" value="{{item.CodSoggetto}}{{item.NumBin}}">
+                            {{item.NumBin}}
+                          </ion-segment-button>
+                        </div>
+                      </ion-segment>
+                    <div [ngSwitch]="selectedBinNum">
+                      <div *ngFor="let item of bins">
+                        <div *ngIf="item.CodSoggetto == selectedSubject.CodSoggetto" >
+                          <ion-textarea *ngSwitchCase="item.CodSoggetto.toString()+item.NumBin" [(ngModel)]="item.Note" placeholder="Notes bin {{item.NumBin}}" [disabled]="newSubject"></ion-textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+          </ion-row> <!-- bin -->
+          <ion-row>
+              <ion-col>
+                <ion-card>
+                  <ion-card-content text-center>
+                    <ion-row>
+                      <ion-col col-sm-12 col-md-12 col-lg-3 col-xl-3>
+                        <button color="light" ion-button (click)="CancelTest()" style="width: 100%" [disabled]="!this.end">Cancel</button>
+                      </ion-col>
+                      <ion-col col-sm-12 col-md-12 col-lg-9 col-xl-9>
+                        <button ion-button (click)="SaveTest()" style="width: 100%" [disabled]="!this.end">Save</button>
+                      </ion-col>
+                    </ion-row>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+          </ion-row> <!-- save -->
+        </ion-col> <!--Col aerna save -->
+    </ion-row>
+  </ion-col> <!--Col if subject is selected-->
+</ion-row>

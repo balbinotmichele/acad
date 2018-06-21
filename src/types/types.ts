@@ -5,11 +5,7 @@ export class Utente {
   Cognome : string = "";
   Email : string = "";
 
-  constructor() {
-    this.Nome = "";
-    this.Cognome = "";
-    this.Email = "";
-  }
+  constructor() {}
 }
 
 export class Soggetto {
@@ -18,9 +14,7 @@ export class Soggetto {
   Descrizione : string = "";
   Email : string = "";
 
-  constructor() {
-
-  }
+  constructor() {}
 }
 
 export class Esperimento {
@@ -42,19 +36,15 @@ export class Orientamento {
   CodOrientamento : number = 0;
   NomeOrientamento : string = "";
   CodEsperimento : number = 0;
-  Email : string = "";
 
-  constructor() {
-    this.CodOrientamento = 0;
-    this.NomeOrientamento = "";
-  }
+  constructor() {}
 }
 
 export class VariabileIndipendente {
   CodVariabile : number = 0;
   NomeVariabile : string = "";
   TipoVariabile : string = "";
-  Email : string = "";
+  CodSessione : number = 0;
 
   constructor() {}
 }
@@ -63,94 +53,81 @@ export class Posizione {
   CodPosizione : number = 0;
   NomePosizione : string = "";
   CodEsperimento : number = 0;
-  Email : string = "";
 
-  constructor() {
-    this.CodPosizione = 0;
-    this.NomePosizione = "";
-  }
+  constructor() {}
 }
 
 export class Stimolo {
   CodStimolo : number = 0;
   NomeStimolo : string = "";
   CodEsperimento : number = 0;
-  Email : string = "";
 
-  constructor() {
-    this.CodStimolo = 0;
-    this.NomeStimolo = "";
-  }
+  constructor() {}
 }
 
 export class Sessione {
-  CodSessione : string = "";
+  CodSessione : number = 0;
+  NomeSessione : string = "";
   DataCreazione : string = "";
-  Email : string = "";
+  CodEsperimento : number = 0;
 
   constructor() {}
 }
 
 export class Test {
   CodSoggetto : number = 0;
-  CodEsperimento : number = 0;
   DataEsperimento : string = "";
   DataInserimento : string = "";
   PrimaScelta : string = "";
   Latenza : number = 0;
   Transizioni : number = 0;
   CodSessione : number = 0;
-  Email : string = "";
 
   constructor() {}
 }
 
 export class Orientato {
   CodSoggetto : number = 0;
-  CodEsperimento : number;
-  CodOrientamento : number;
+  CodSessione : number = 0;
+  CodOrientamento : number = 0;
   Tempo : number = 0;
-  Email : string = "";
 
   constructor() {}
 }
 
 export class Posizionato {
   CodSoggetto : number = 0;
-  CodEsperimento : number = 0;
+  CodSessione : number = 0;
   CodPosizione : number = 0;
   Tempo : number = 0;
-  Email : string = "";
 
   constructor() {}
 }
 
 export class Stimolato {
   CodSoggetto : number = 0;
-  CodEsperimento : number = 0;
+  CodSessione : number = 0;
   CodPosizione : number = 0;
   CodStimolo : number = 0;
-  Email : string = "";
+  Tempo : number = 0;
 
   constructor() {}
 }
 
 export class Dipendato {
   CodSoggetto : number = 0;
-  CodEsperimento : number = 0;
+  CodSessione : number = 0;
   CodVariabile : number = 0;
   Valore : string = "";
-  Email : string = "";
 
   constructor() {}
 }
 
 export class Bin {
   CodSoggetto : number = 0;
-  CodEsperimento : number = 0;
+  CodSessione : number = 0;
   NumBin : number = 0;
   Note : string = "";
-  Email : string = "";
 
   constructor() {}
 }

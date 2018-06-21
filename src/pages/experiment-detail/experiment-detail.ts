@@ -62,15 +62,15 @@ export class ExperimentDetailPage {
   }
 
   LoadEditExperiment(): any {
-    this.sd.GetPosizioniByEsperimento(this.experiment.CodEsperimento, this.experiment.Email)
+    this.sd.GetPosizioniByEsperimento(this.experiment.CodEsperimento)
       .subscribe(res => {
         this.positions = res;
 
-        this.sd.GetOrientamentiByEsperimento(this.experiment.CodEsperimento, this.experiment.Email)
+        this.sd.GetOrientamentiByEsperimento(this.experiment.CodEsperimento)
         .subscribe(res => {
           this.orientations = res;
 
-          this.sd.GetStimoliByEsperimento(this.experiment.CodEsperimento, this.experiment.Email)
+          this.sd.GetStimoliByEsperimento(this.experiment.CodEsperimento)
             .subscribe(res => {
               this.stimuli = res;
               this.ChangeShape();
@@ -86,7 +86,7 @@ export class ExperimentDetailPage {
   Save() {
     this.sd.EditAddEsperimento(this.experiment)
       .subscribe(res => {
-        this.sd.GetEsperimentoByNome(res.data.NomeEsperimento)
+        this.sd.GetEsperimentoByNome(res.data.NomeEsperimento, this.experiment.Email)
           .subscribe(res2 => {
             this.experiment.CodEsperimento = res2[0].CodEsperimento;
             this.SaveOther();
@@ -100,21 +100,21 @@ export class ExperimentDetailPage {
         for(var i = 0; i< this.positions.length; i++) {
           var tmp = new Posizione();
           tmp = this.positions[i];
-          this.sd.EditAddPosizioneToEsperimento(this.experiment.CodEsperimento, this.experiment.Email, tmp)
+          this.sd.EditAddPosizioneToEsperimento(this.experiment.CodEsperimento, tmp)
             .subscribe();
         }
 
         for(var j = 0; j< this.orientations.length; j++) {
           var tmp2 = new Orientamento();
           tmp2 = this.orientations[j];
-          this.sd.EditAddOrientamentoToEsperimento(this.experiment.CodEsperimento, this.experiment.Email, tmp2)
+          this.sd.EditAddOrientamentoToEsperimento(this.experiment.CodEsperimento, tmp2)
             .subscribe();
         }
 
         for(var k = 0; k< this.stimuli.length; k++) {
           var tmp3 = new Stimolo();
           tmp3 = this.stimuli[k];
-          this.sd.EditAddStimoloToEsperimento(this.experiment.CodEsperimento, this.experiment.Email, tmp3)
+          this.sd.EditAddStimoloToEsperimento(this.experiment.CodEsperimento, tmp3)
             .subscribe();
         }
         this.navCtrl.setRoot('HomePage', {"clicked": "exp"});
