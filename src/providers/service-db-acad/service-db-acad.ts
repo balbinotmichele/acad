@@ -372,7 +372,7 @@ export class ServiceDbAcadProvider {
     }
   }
 
-  GetSoggettiTestati(CodSessione : number):Observable<number[]>{
+  GetSoggettiTestati(CodSessione : number):Observable<any[]>{
     if(CodSessione != undefined) {
       let headers = new HttpHeaders();
       headers = headers.set('Content-Type', 'application/json; charset=utf-8');

@@ -31,11 +31,11 @@ export class TestDetailPage {
   stimuli : Stimolo[] = [];
   orient : Orientamento[] = [];
 
-  positioned : Posizionato[] = [];
-  oriented : Orientato[] = [];
-  posStim : Stimolato[] = [];
+  positioned : Posizionato[];
+  oriented : Orientato[];
+  posStim : Stimolato[];
 
-  dipendato : Dipendato[] = [];
+  dipendato : Dipendato[];
 
   bins : Bin[] = [];
   binSupport : Bin[];
@@ -45,8 +45,7 @@ export class TestDetailPage {
   newSubject : Soggetto;
   editSubject : Soggetto;
 
-  edit : boolean;
-  ready : boolean;
+  tested : boolean;
   testing : boolean;
   pause : boolean;
   end : boolean;
@@ -117,7 +116,7 @@ export class TestDetailPage {
       })
     this.sd.GetSoggettiTestati(this.session.CodSessione)
       .subscribe(res => {
-        this.testedSubjects = res;
+        this.testedSubjects = res.map(x => x.CodSoggetto);
       })
   }
 
@@ -147,16 +146,16 @@ export class TestDetailPage {
       })
   }
 
-  EditSoggetto() {
-    this.editSubject = JSON.parse(JSON.stringify(this.selectedSubject));
-    this.edit = true;
-  }
+  // EditSoggetto() {
+  //   this.editSubject = JSON.parse(JSON.stringify(this.selectedSubject));
+  //   this.edit = true;
+  // }
 
-  SaveEdit() {
-    this.selectedSubject = JSON.parse(JSON.stringify(this.editSubject));
-    this.edit = false;
-    this.editSubject = undefined;
-  }
+  // SaveEdit() {
+  //   this.selectedSubject = JSON.parse(JSON.stringify(this.editSubject));
+  //   this.edit = false;
+  //   this.editSubject = undefined;
+  // }
 
   DisableDeleteTest() : boolean {
     return this.tests.map(x => x.CodSoggetto).indexOf(this.selectedSubject.CodSoggetto) < 0
@@ -193,16 +192,24 @@ export class TestDetailPage {
   //#region test
   //#region before start
   GetTest(sub : Soggetto) {
+    this.selectedSubject = undefined;
     this.sd.GetTestSessione(this.session.CodSessione, sub.CodSoggetto)
       .subscribe(res => {
-        this.test = res;
-        this.tests.push(this.test);
-        this.selectedSubject = sub;
-        let index = this.tests.map(x => x.CodSoggetto).indexOf(this.selectedSubject.CodSoggetto);
-        if(index >= 0)
-          this.LoadTestData(this.tests[index]);
+        this.test = res[0];
+        if(this.test != undefined) {
+          this.tests.push(this.test);
+          var index = this.tests.map(x => x.CodSoggetto).indexOf(sub.CodSoggetto);
+        // }
+        // if(index >= 0)
+          this.tested = true;
+          this.LoadTestData(this.tests[index], sub);
+          this.TestedSubject();
+        }
         else
+        {
+          this.selectedSubject = sub;
           this.LoadNewTest();
+        }
       },
       errorCode => this.errmsg = errorCode
       )
@@ -212,44 +219,62 @@ export class TestDetailPage {
     this.GetTest(item);
   }
 
-  LoadTestData(test : Test) {
-    this.sd.GetPosizionatoByTest(this.session.CodSessione, this.selectedSubject.CodSoggetto)
+  LoadTestData(test : Test, sub : Soggetto) {
+    this.positioned = undefined;
+    this.oriented = undefined;
+    this.bins = undefined;
+    this.dipendato = undefined;
+    this.posStim = undefined;
+
+    this.sd.GetPosizionatoByTest(this.session.CodSessione, sub.CodSoggetto)
       .subscribe(res => {
+        this.positioned = [];
         for(let i = 0; i < res.length; i++)
-          this.positioned[this.selectedSubject.CodSoggetto.toString()+this.session.CodSessione.toString()+res[i].CodPosizione.toString()] = res[i];
-    },
+          this.positioned[sub.CodSoggetto.toString()+this.session.CodSessione.toString()+res[i].CodPosizione.toString()] = res[i];
+        if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) this.selectedSubject = sub;
+        },
     errorCode => this.errmsg = errorCode
     )
 
-    this.sd.GetOrientatoByTest(this.session.CodSessione, this.selectedSubject.CodSoggetto)
+    this.sd.GetOrientatoByTest(this.session.CodSessione, sub.CodSoggetto)
       .subscribe(res => {
+        this.oriented = [];
         for(let i = 0; i < res.length; i++)
-          this.oriented[this.selectedSubject.CodSoggetto.toString()+this.session.CodSessione.toString()+res[i].CodOrientamento.toString()] = res[i];
-      },
+          this.oriented[sub.CodSoggetto.toString()+this.session.CodSessione.toString()+res[i].CodOrientamento.toString()] = res[i];
+        if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) this.selectedSubject = sub;
+        },
     errorCode => this.errmsg = errorCode
     )
 
-    this.sd.GetStimolatoByTest(this.session.CodSessione, this.selectedSubject.CodSoggetto)
+    this.sd.GetStimolatoByTest(this.session.CodSessione, sub.CodSoggetto)
       .subscribe(res => {
         this.posStim = res;
+        if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) this.selectedSubject = sub;
+        },
+    errorCode => this.errmsg = errorCode
+    )
+
+    this.sd.GetDipendatoByTest(this.session.CodSessione, sub.CodSoggetto)
+    .subscribe(res => {
+      this.dipendato = [];
+      for(let i = 0; i < res.length; i++)
+        this.dipendato[sub.CodSoggetto.toString()+this.session.CodSessione.toString()+res[i].CodVariabile.toString()] = res[i];
+      if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) this.selectedSubject = sub;
       },
     errorCode => this.errmsg = errorCode
     )
 
-    this.sd.GetDipendatoByTest(this.session.CodSessione, this.selectedSubject.CodSoggetto)
-    .subscribe(res => {
-      for(let i = 0; i < res.length; i++)
-        this.dipendato[this.selectedSubject.CodSoggetto.toString()+this.session.CodSessione.toString()+res[i].CodVariabile.toString()] = res[i];
-    },
-    errorCode => this.errmsg = errorCode
-    )
-
-    this.sd.GetBinByTest(this.session.CodSessione, this.offset)
+    this.sd.GetBinByTest(this.session.CodSessione, sub.CodSoggetto)
     .subscribe(res => {
       this.bins = res;
+      if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) this.selectedSubject = sub;
     },
     errorCode => this.errmsg = errorCode
     )
+  }
+
+  TestedSubject() {
+    this.timer = "TEST ENDED"
   }
 
   LoadNewTest() {
@@ -260,6 +285,9 @@ export class TestDetailPage {
     this.oriented = [];
     this.dipendato = [];
     this.posStim = [];
+    this.testing = false;
+    this.tested = false;
+    this.pause = false;
     this.SetPOD();
     this.SetBins();
   }
@@ -316,9 +344,15 @@ export class TestDetailPage {
   }
   //#endregion
   StartTest() {
+    if(this.test.DataEsperimento == "")
+      this.test.DataEsperimento = new Date().toISOString().slice(0, 19);
+    if(this.test.DataInserimento == "")
+      this.test.DataInserimento = new Date().toISOString().slice(0, 19);
     this.testing = true;
     this.pause = false;
     this.StartTimer(this.distance);
+    if(this.posTimer != undefined)
+      this.ChangePosition(this.chosPos);
   }
   //#region during test
   PauseTest() {
@@ -354,9 +388,11 @@ export class TestDetailPage {
   }
 
   posTimer : any;
+  chosPos : Posizione;
   ChangePosition(chosen : Posizione) {
     if(this.exp.PrimaScelta == true && this.test.PrimaScelta == undefined)
       this.test.PrimaScelta = chosen.CodPosizione.toString();
+    this.chosPos = chosen;
 
     clearInterval(this.posTimer);
     this.posTimer = setInterval(() => {
@@ -384,23 +420,30 @@ export class TestDetailPage {
   }
 
   CancelTest() {
-    this.ResetTest();
+    if(!this.tested)
+      this.ResetTest();
+    else
+      this.GetTest(this.selectedSubject);
   }
 
   SaveTest() {
-    this.sd.EditAddTest(this.test)
-      .subscribe(res => {},
+    if(this.tested == false) {
+      this.sd.EditAddTest(this.test)
+      .subscribe(res => {
+        if(res.status == 200) {this.tested = true; this.end = false;}
+      },
       errorCode=> this.errmsg = errorCode
-    );
+      );
 
-    for(let i in this.positioned) {
-      this.sd.EditAddPosizionato(this.positioned[i])
-        .subscribe(res => {}, errorCode => this.errmsg = errorCode)
-    }
+      for(let i in this.positioned) {
+        this.sd.EditAddPosizionato(this.positioned[i])
+          .subscribe(res => {}, errorCode => this.errmsg = errorCode)
+      }
 
-    for(let i in this.oriented) {
-      this.sd.EditAddOrientato(this.oriented[i])
-        .subscribe(res => {}, errorCode => this.errmsg = errorCode)
+      for(let i in this.oriented) {
+        this.sd.EditAddOrientato(this.oriented[i])
+          .subscribe(res => {}, errorCode => this.errmsg = errorCode)
+      }
     }
 
     for(let i in this.posStim) {
@@ -417,6 +460,8 @@ export class TestDetailPage {
       this.sd.EditAddBin(this.bins[i])
         .subscribe(res => {}, errorCode => this.errmsg = errorCode)
     }
+
+    this.tested = true;
   }
   //#endregion
 
@@ -424,18 +469,19 @@ export class TestDetailPage {
 
   //#region timer
   SetTimer() {
-    var countDownDate = new Date().getTime() + (this.exp.DurataBin * this.exp.NumeroBin * 1000);
-    var now = new Date().getTime();
+    if(this.tested == true) this.EndTest(); else {
+      var countDownDate = new Date().getTime() + (this.exp.DurataBin * this.exp.NumeroBin * 1000);
+      var now = new Date().getTime();
 
-    var distance = countDownDate - now;
+      var distance = countDownDate - now;
 
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    this.timer = (hours > 0 ? hours  + ":" : "" ) + minutes + ":" + (seconds < 10 ? "0"+seconds : seconds );
+      this.timer = (hours > 0 ? hours  + ":" : "" ) + minutes + ":" + (seconds < 10 ? "0"+seconds : seconds );
+    }
   }
-
   tim : any;
   distance : number;
   StartTimer(durata : number) {

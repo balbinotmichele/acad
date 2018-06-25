@@ -342,7 +342,7 @@ app.get("/GetDipendatoByTest", function(req,res){
   connection= mysql.createConnection(sConnection)	;
   connection.connect(function(err){
     if (!err){
-      var sQuery=" SELECT * FROM Dipendato WHERE CodSogetto = ? AND CodSessione = ?"
+      var sQuery=" SELECT * FROM Dipendato WHERE CodSoggetto = ? AND CodSessione = ?"
       var data=[];
       data.push(req.query.CodSoggetto);
       data.push(req.query.CodSessione);
@@ -361,30 +361,54 @@ app.get("/GetDipendatoByTest", function(req,res){
 });
 
 app.put('/EditAddDipendato', function(req, res){
-	connection = mysql.createConnection(sConnection);
+  connection = mysql.createConnection(sConnection);
 	connection.connect(function(err){
     if(!err) {
-      var sQuery="INSERT INTO Dipendato(CodSoggetto, CodSessione, CodVariabile, Valore) VALUES(?, ?, ?, ?)";
+      var sQuery="UPDATE Dipendato SET Valore = ? WHERE CodSoggetto = ? AND CodSessione = ? AND CodVariabile = ?;";
       var data = [];
+      data.push(req.query.Valore);
       data.push(req.query.CodSoggetto);
       data.push(req.query.CodSessione);
       data.push(req.query.CodVariabile);
-      data.push(req.query.Valore);
       connection.query(sQuery, data, function(err, rows, fields) {
         if (err)
         {
           res.sendStatus(500);
         }
+        else if (rows.affectedRows==0)
+        {
+              var sQuery="INSERT INTO Dipendato(CodSoggetto, CodSessione, CodVariabile, Valore) VALUES(?, ?, ?, ?)";
+              var data = [];
+              data.push(req.query.CodSoggetto);
+              data.push(req.query.CodSessione);
+              data.push(req.query.CodVariabile);
+              data.push(req.query.Valore);
+              connection.query(sQuery2, data, function(err, rows, fields) {
+            if (err)
+            {
+              res.sendStatus(500);
+            }
+            else
+              res.status(200).send({
+                status:  200,
+                Message: "Ins OK",
+                data: 	 req.query
+              });
+              // connection.end(function(err) {
+        //   console.log('Chiuso')
+        // });
+          });
+        }
         else
         {
           res.status(200).send({
             status:  200,
-            Message: "Ins OK",
+            Message: "Mod OK",
             data:    req.query
           });
           // connection.end(function(err) {
-          //   console.log('Chiuso')
-          // });
+        //   console.log('Chiuso')
+        // });
         }
       });
     }
@@ -1021,7 +1045,7 @@ app.get("/GetOrientatoByTest",function(req,res){
   connection= mysql.createConnection(sConnection)	;
   connection.connect(function(err){
     if (!err){
-      var sQuery="SELECT * FROM Orientato WHERE CodSessione = ? CodSessione = ? AND CodSoggetto = ?;";
+      var sQuery="SELECT * FROM Orientato WHERE CodSessione = ? AND CodSoggetto = ?;";
       var data=[];
       data.push(req.query.CodSessione);
       data.push(req.query.CodSoggetto);
@@ -1155,7 +1179,7 @@ app.get("/GetStimolatoByTest",function(req,res){
   connection= mysql.createConnection(sConnection)	;
   connection.connect(function(err){
     if (!err){
-      var sQuery="SELECT * FROM Stimolato WHERE CodSessione = ? CodSessione = ? AND CodSoggetto = ?;";
+      var sQuery="SELECT * FROM Stimolato WHERE CodSessione = ? AND CodSoggetto = ?;";
       var data=[];
       data.push(req.query.CodSessione);
       data.push(req.query.CodSoggetto);
@@ -1174,31 +1198,57 @@ app.get("/GetStimolatoByTest",function(req,res){
 });
 
 app.put('/EditAddStimolato', function(req, res){
-	connection = mysql.createConnection(sConnection);
+  connection = mysql.createConnection(sConnection);
 	connection.connect(function(err){
     if(!err) {
-      var sQuery2="INSERT INTO Stimolato(CodSoggetto, CodSessione, CodOrientamento, CodStimolo) VALUES(?,?,?,?)"
+      var sQuery="UPDATE Bin SET CodStimolo = ? WHERE CodSoggetto = ? AND CodSessione = ? AND CodPosizione = ?;";
       var data = [];
+      data.push(req.query.CodStimolo);
       data.push(req.query.CodSoggetto);
       data.push(req.query.CodSessione);
       data.push(req.query.CodPosizione);
-      data.push(req.query.CodStimolo);
-      connection.query(sQuery2, data, function(err, rows, fields) {
+      connection.query(sQuery, data, function(err, rows, fields) {
         if (err)
         {
           res.sendStatus(500);
         }
-        else
-          res.status(200).send({
-            status:  200,
-            Message: "Ins OK",
-            data: 	 req.query
-          });
+        else if (rows.affectedRows==0)
+        {
+          var sQuery2="INSERT INTO Stimolato(CodSoggetto, CodSessione, CodPosizione, CodStimolo) VALUES(?,?,?,?)"
+          var data = [];
+          data.push(req.query.CodSoggetto);
+          data.push(req.query.CodSessione);
+          data.push(req.query.CodPosizione);
+          data.push(req.query.CodStimolo);
+          connection.query(sQuery2, data, function(err, rows, fields) {
+            if (err)
+            {
+              res.sendStatus(500);
+            }
+            else
+              res.status(200).send({
+                status:  200,
+                Message: "Ins OK",
+                data: 	 req.query
+              });
               // connection.end(function(err) {
         //   console.log('Chiuso')
         // });
           });
         }
+        else
+        {
+          res.status(200).send({
+            status:  200,
+            Message: "Mod OK",
+            data:    req.query
+          });
+          // connection.end(function(err) {
+        //   console.log('Chiuso')
+        // });
+        }
+      });
+    }
     else {
       res.sendStatus(500);
     }
@@ -1211,10 +1261,10 @@ app.get("/GetBinByTest",function(req,res){
   connection= mysql.createConnection(sConnection)	;
   connection.connect(function(err){
     if (!err){
-      var sQuery="SELECT * FROM Test WHERE CodSessione = ? LIMIT 5 OFFSET ?;";
+      var sQuery="SELECT * FROM Bin WHERE CodSessione = ? AND CodSoggetto = ?;";
       var data=[];
       data.push(req.query.CodSessione);
-      data.push(req.query.Offset);
+      data.push(req.query.CodSoggetto);
       connection.query(sQuery,data,function(err,rows,fileds){
         if (err)
             res.sendStatus(500);
@@ -1230,31 +1280,57 @@ app.get("/GetBinByTest",function(req,res){
 });
 
 app.put('/EditAddBin', function(req, res){
-	connection = mysql.createConnection(sConnection);
+  connection = mysql.createConnection(sConnection);
 	connection.connect(function(err){
     if(!err) {
-      var sQuery2="INSERT INTO Bin(CodSoggetto, CodSessione, NumBin, Note) VALUES(?,?,?,?)"
+      var sQuery="UPDATE Bin SET Note = ? WHERE CodSoggetto = ? AND CodSessione = ? AND NumBin = ?;";
       var data = [];
+      data.push(req.query.Note);
       data.push(req.query.CodSoggetto);
       data.push(req.query.CodSessione);
       data.push(req.query.NumBin);
-      data.push(req.query.Note);
-      connection.query(sQuery2, data, function(err, rows, fields) {
+      connection.query(sQuery, data, function(err, rows, fields) {
         if (err)
         {
           res.sendStatus(500);
         }
-        else
-          res.status(200).send({
-            status:  200,
-            Message: "Ins OK",
-            data: 	 req.query
-          });
+        else if (rows.affectedRows==0)
+        {
+          var sQuery2="INSERT INTO Bin(CodSoggetto, CodSessione, NumBin, Note) VALUES(?,?,?,?)"
+          var data = [];
+          data.push(req.query.CodSoggetto);
+          data.push(req.query.CodSessione);
+          data.push(req.query.NumBin);
+          data.push(req.query.Note);
+          connection.query(sQuery2, data, function(err, rows, fields) {
+            if (err)
+            {
+              res.sendStatus(500);
+            }
+            else
+              res.status(200).send({
+                status:  200,
+                Message: "Ins OK",
+                data: 	 req.query
+              });
               // connection.end(function(err) {
         //   console.log('Chiuso')
         // });
           });
         }
+        else
+        {
+          res.status(200).send({
+            status:  200,
+            Message: "Mod OK",
+            data:    req.query
+          });
+          // connection.end(function(err) {
+        //   console.log('Chiuso')
+        // });
+        }
+      });
+    }
     else {
       res.sendStatus(500);
     }
