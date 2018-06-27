@@ -12,9 +12,11 @@ export class DashComponent {
   @Input() test : boolean;
   @Input() experiment : boolean;
   @Input() card : boolean;
+  @Input() data : boolean;
 
   @Output() testsClick: EventEmitter<boolean> = new EventEmitter();
   @Output() experimentsClick: EventEmitter<boolean> = new EventEmitter();
+  @Output() dataClick : EventEmitter<boolean> = new EventEmitter();
 
   newExperiment : boolean;
   exp : Esperimento;

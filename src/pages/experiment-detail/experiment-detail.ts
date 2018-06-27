@@ -19,6 +19,11 @@ export class ExperimentDetailPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private sd : ServiceDbAcadProvider) {
     this.experiment = new Esperimento();
+
+    this.sd.GetEsperimentiUsati()
+      .subscribe(res => {
+        this.usedExp = res.map(x => x.CodEsperimento);
+      })
   }
 
 
@@ -38,6 +43,14 @@ export class ExperimentDetailPage {
       this.ChangeShape();
 
       console.log(this.experiment);
+  }
+
+  usedExp : number[];
+  UnusedExperiment():boolean {
+    if(this.usedExp != undefined)
+      return this.usedExp.indexOf(this.experiment.CodEsperimento) < 0;
+    else
+      return false;
   }
 
   trackByFn(index: any, item: any) {
@@ -95,8 +108,8 @@ export class ExperimentDetailPage {
   }
 
   SaveOther() {
-    this.sd.ClearPOS(this.experiment.CodEsperimento)
-      .subscribe(res => {
+    // this.sd.ClearPOS(this.experiment.CodEsperimento)
+    //   .subscribe(res => {
         for(var i = 0; i< this.positions.length; i++) {
           var tmp = new Posizione();
           tmp = this.positions[i];
@@ -118,7 +131,7 @@ export class ExperimentDetailPage {
             .subscribe();
         }
         this.navCtrl.setRoot('HomePage', {"clicked": "exp"});
-      });
+      // });
     }
 
   onTestClick(test: boolean) {

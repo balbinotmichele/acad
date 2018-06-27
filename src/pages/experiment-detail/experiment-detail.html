@@ -57,7 +57,7 @@
                       <ion-list inset>
                         <ion-item *ngFor="let item of orientations; let i = index; trackBy:trackByFn" >
                           <ion-input type="text" [(ngModel)]="orientations[i].NomeOrientamento" placeholder="Orientation name"></ion-input>
-                          <ion-icon item-end name="trash" (click)="orientations.splice(i, 1)"></ion-icon>
+                          <ion-icon item-end name="trash" (click)="orientations.splice(i, 1)" *ngIf="UnusedExperiment()"></ion-icon>
                         </ion-item>
                         <button ion-item (click)="NewOrient()">Add orientation</button>
                       </ion-list>
@@ -75,7 +75,7 @@
                       <ion-list inset>
                         <ion-item *ngFor="let item of positions; let i = index; trackBy:trackByFn" >
                           <ion-input type="text" [(ngModel)]="positions[i].NomePosizione" placeholder="Position name"></ion-input>
-                          <ion-icon item-end name="trash" (click)="this.positions.splice(i, 1); CheckPos();"></ion-icon>
+                          <ion-icon item-end name="trash" (click)="this.positions.splice(i, 1); CheckPos();" *ngIf="UnusedExperiment()" ></ion-icon>
                         </ion-item>
                         <button ion-item (click)="NewPos();">Add position</button>
                       </ion-list>
@@ -94,7 +94,7 @@
                       <ion-list inset>
                         <ion-item *ngFor="let item of stimuli; let i = index; trackBy:trackByFn" >
                           <ion-input type="text" [(ngModel)]="stimuli[i].NomeStimolo" placeholder="Stimulus name"></ion-input>
-                          <ion-icon item-end name="trash" (click)="stimuli.splice(i, 1)"></ion-icon>
+                          <ion-icon item-end name="trash" (click)="stimuli.splice(i, 1)" *ngIf="UnusedExperiment()"></ion-icon>
                         </ion-item>
                         <button ion-item (click)="NewStim();">Add stimulus</button>
                       </ion-list>

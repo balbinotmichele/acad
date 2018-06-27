@@ -1,9 +1,10 @@
 import  firebase from 'firebase';
 import { VariabileIndipendente, Soggetto, Stimolato, Posizione, Stimolo, Utente, Posizionato, Orientato, Orientamento, Bin, Dipendato } from './../../types/types';
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { Esperimento, Sessione, Test } from '../../types/types';
 import { ServiceDbAcadProvider } from '../../providers/service-db-acad/service-db-acad';
+import { TestsHomeComponent } from '../../components/tests-home/tests-home';
 
 @IonicPage()
 @Component({
@@ -55,7 +56,7 @@ export class TestDetailPage {
   offset : number = 0;
   errmsg: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private sd : ServiceDbAcadProvider, private alertCtrl : AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private sd : ServiceDbAcadProvider, private alertCtrl : AlertController, private loadingCtrl : LoadingController) {
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {}
       else {
@@ -66,7 +67,7 @@ export class TestDetailPage {
     //#region Data from page
     this.session = this.navParams.get("session");
     this.exp = this.navParams.get("exp");
-    this.indieVar = this.navParams.get("indieVar");
+    this.indieVar = this.navParams.get("indieVar") as VariabileIndipendente[];
 
     if(this.session == undefined || this.exp == undefined) {
       this.session = JSON.parse(sessionStorage.getItem("session"));
@@ -104,7 +105,28 @@ export class TestDetailPage {
     //#endregion
 
     this.GetSoggetti(); //carica tutti i soggetti
-    this.SetTimer(); //setta il timer
+  }
+
+  ResetVariables() {
+    this.tested = false;
+    this.testing = false;
+    this.pause = false;
+    this.end = false;
+
+    this.newSubject = undefined;
+    this.editSubject = undefined;
+
+    this.chosOri = undefined;
+    this.chosPos = undefined;
+
+    this.selectedBin = undefined;
+    this.selectedBinNum = undefined;
+
+    this.distance = undefined;
+
+    clearInterval(this.tim);
+    clearInterval(this.posTimer);
+    clearInterval(this.oriTimer);
   }
 
   //#region soggetti
@@ -114,6 +136,10 @@ export class TestDetailPage {
         this.subjects = res;
         this.searchedSubjects = res;
       })
+    this.GetSoggettiTestati();
+  }
+
+  GetSoggettiTestati() {
     this.sd.GetSoggettiTestati(this.session.CodSessione)
       .subscribe(res => {
         this.testedSubjects = res.map(x => x.CodSoggetto);
@@ -158,7 +184,7 @@ export class TestDetailPage {
   // }
 
   DisableDeleteTest() : boolean {
-    return this.tests.map(x => x.CodSoggetto).indexOf(this.selectedSubject.CodSoggetto) < 0
+    return this.testedSubjects.indexOf(this.selectedSubject.CodSoggetto) < 0
   }
 
   DeleteSoggetto() {
@@ -199,8 +225,6 @@ export class TestDetailPage {
         if(this.test != undefined) {
           this.tests.push(this.test);
           var index = this.tests.map(x => x.CodSoggetto).indexOf(sub.CodSoggetto);
-        // }
-        // if(index >= 0)
           this.tested = true;
           this.LoadTestData(this.tests[index], sub);
           this.TestedSubject();
@@ -208,7 +232,9 @@ export class TestDetailPage {
         else
         {
           this.selectedSubject = sub;
+          this.selectedBinNum=this.selectedSubject.CodSoggetto.toString() + "1"
           this.LoadNewTest();
+          this.SetTimer(); //setta il timer
         }
       },
       errorCode => this.errmsg = errorCode
@@ -216,7 +242,16 @@ export class TestDetailPage {
   }
 
   SelectedSubject(item : Soggetto, i : number) {
-    this.GetTest(item);
+    const loader = this.loadingCtrl.create({
+      content: "Please wait...",
+      duration: 300
+    });
+
+    loader.present();
+
+    loader.onDidDismiss(() => {
+      this.GetTest(item);
+    })
   }
 
   LoadTestData(test : Test, sub : Soggetto) {
@@ -231,7 +266,7 @@ export class TestDetailPage {
         this.positioned = [];
         for(let i = 0; i < res.length; i++)
           this.positioned[sub.CodSoggetto.toString()+this.session.CodSessione.toString()+res[i].CodPosizione.toString()] = res[i];
-        if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) this.selectedSubject = sub;
+        if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) {this.selectedSubject = sub; this.selectedBinNum=this.selectedSubject.CodSoggetto.toString() + "1"}
         },
     errorCode => this.errmsg = errorCode
     )
@@ -241,7 +276,7 @@ export class TestDetailPage {
         this.oriented = [];
         for(let i = 0; i < res.length; i++)
           this.oriented[sub.CodSoggetto.toString()+this.session.CodSessione.toString()+res[i].CodOrientamento.toString()] = res[i];
-        if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) this.selectedSubject = sub;
+        if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) {this.selectedSubject = sub; this.selectedBinNum=this.selectedSubject.CodSoggetto.toString() + "1"}
         },
     errorCode => this.errmsg = errorCode
     )
@@ -249,7 +284,7 @@ export class TestDetailPage {
     this.sd.GetStimolatoByTest(this.session.CodSessione, sub.CodSoggetto)
       .subscribe(res => {
         this.posStim = res;
-        if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) this.selectedSubject = sub;
+        if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) {this.selectedSubject = sub; this.selectedBinNum=this.selectedSubject.CodSoggetto.toString() + "1"}
         },
     errorCode => this.errmsg = errorCode
     )
@@ -259,7 +294,7 @@ export class TestDetailPage {
       this.dipendato = [];
       for(let i = 0; i < res.length; i++)
         this.dipendato[sub.CodSoggetto.toString()+this.session.CodSessione.toString()+res[i].CodVariabile.toString()] = res[i];
-      if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) this.selectedSubject = sub;
+      if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) {this.selectedSubject = sub; this.selectedBinNum=this.selectedSubject.CodSoggetto.toString() + "1"}
       },
     errorCode => this.errmsg = errorCode
     )
@@ -267,7 +302,7 @@ export class TestDetailPage {
     this.sd.GetBinByTest(this.session.CodSessione, sub.CodSoggetto)
     .subscribe(res => {
       this.bins = res;
-      if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) this.selectedSubject = sub;
+      if(this.positioned != undefined && this.oriented != undefined && this.posStim != undefined && this.bins != undefined && this.dipendato != null) {this.selectedSubject = sub; this.selectedBinNum=this.selectedSubject.CodSoggetto.toString() + "1"}
     },
     errorCode => this.errmsg = errorCode
     )
@@ -333,7 +368,6 @@ export class TestDetailPage {
         this.bins.push(tmp);
       }
     }
-    this.selectedBinNum=this.selectedSubject.CodSoggetto.toString() + "1"
   }
 
   AddStimPos() {
@@ -353,11 +387,14 @@ export class TestDetailPage {
     this.StartTimer(this.distance);
     if(this.posTimer != undefined)
       this.ChangePosition(this.chosPos);
+    if(this.oriTimer != undefined)
+      this.ChangeOrient(this.chosOri);
   }
   //#region during test
   PauseTest() {
     clearInterval(this.tim);
     clearInterval(this.posTimer);
+    clearInterval(this.oriTimer);
     this.pause = true;
   }
 
@@ -375,10 +412,9 @@ export class TestDetailPage {
           text: 'Yes',
           handler: () => {
             clearInterval(this.posTimer);
+            clearInterval(this.oriTimer)
             this.SetTimer();
-            this.distance = undefined;
-            this.pause = false;
-            this.testing = false;
+            this.ResetVariables();
             this.LoadNewTest();
           }
         }
@@ -390,18 +426,29 @@ export class TestDetailPage {
   posTimer : any;
   chosPos : Posizione;
   ChangePosition(chosen : Posizione) {
-    if(this.exp.PrimaScelta == true && this.test.PrimaScelta == undefined)
-      this.test.PrimaScelta = chosen.CodPosizione.toString();
+    if(chosen == undefined) return;
+    if(this.exp.PrimaScelta.toString() == "true" && this.test.PrimaScelta == "") {
+      this.test.PrimaScelta = chosen.NomePosizione;
+    }
+    if(this.exp.Transizioni.toString() == "true") {
+      if(this.chosPos != chosen) this.test.Transizioni++;
+    }
     this.chosPos = chosen;
 
     clearInterval(this.posTimer);
     this.posTimer = setInterval(() => {
-      this.positioned[this.selectedSubject.CodSoggetto.toString() + this.session.CodSessione.toString() + chosen.CodPosizione.toString()].Tempo+=10;
+      this.positioned[this.selectedSubject.CodSoggetto.toString() + this.session.CodSessione.toString() + chosen.CodPosizione.toString()].Tempo += 10;
     }, 10)
   }
 
+  oriTimer : any;
+  chosOri : Orientamento;
   ChangeOrient(chosen : Orientamento) {
-
+    if(chosen == undefined) return;
+    clearInterval(this.oriTimer);
+    this.oriTimer = setInterval(() => {
+      this.oriented[this.selectedSubject.CodSoggetto.toString() + this.session.CodSessione.toString() + chosen.CodOrientamento.toString()].Tempo+=10;
+    }, 10)
   }
   //#endregion
 
@@ -410,13 +457,35 @@ export class TestDetailPage {
     this.end = true;
     clearInterval(this.tim);
     clearInterval(this.posTimer);
+    clearInterval(this.oriTimer);
     this.timer = "TIME OUT";
     this.testing = false;
     this.pause = false;
+    this.GetSoggettiTestati();
   }
 
   DeleteTestSoggetto() {
-    this.ResetTest();
+    const deleteTest = this.alertCtrl.create({
+      title: 'Delete the test',
+      message: 'Are you sure you want to delete this test (along with its data)?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: () => {}
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.sd.DeleteTestSoggetto(this.test)
+              .subscribe();
+            this.selectedSubject = undefined;
+            this.GetSoggettiTestati();
+          }
+        }
+      ]
+    });
+    deleteTest.present();
   }
 
   CancelTest() {
@@ -427,41 +496,52 @@ export class TestDetailPage {
   }
 
   SaveTest() {
+    const loader = this.loadingCtrl.create({
+      content: "Please wait...",
+      duration: 300
+    });
+
+    loader.present();
     if(this.tested == false) {
+      if(this.exp.Latenza.toString() == "true" && this.test.Latenza == 0) {
+        this.test.Latenza = ((this.exp.NumeroBin * this.exp.DurataBin)*1000) - this.positioned.map(x => x.Tempo).reduce((a,b) => a+b);
+      }
       this.sd.EditAddTest(this.test)
       .subscribe(res => {
-        if(res.status == 200) {this.tested = true; this.end = false;}
+
+        for(let i in this.positioned) {
+          this.sd.EditAddPosizionato(this.positioned[i])
+            .subscribe()
+        }
+
+        for(let i in this.oriented) {
+          this.sd.EditAddOrientato(this.oriented[i])
+            .subscribe()
+        }
+        this.tested = true;
+        this.end = false;
+        this.GetSoggettiTestati();
+        this.TestedSubject();
       },
       errorCode=> this.errmsg = errorCode
       );
-
-      for(let i in this.positioned) {
-        this.sd.EditAddPosizionato(this.positioned[i])
-          .subscribe(res => {}, errorCode => this.errmsg = errorCode)
-      }
-
-      for(let i in this.oriented) {
-        this.sd.EditAddOrientato(this.oriented[i])
-          .subscribe(res => {}, errorCode => this.errmsg = errorCode)
-      }
     }
 
     for(let i in this.posStim) {
+      this.posStim[i].Tempo = this.positioned.filter(x => x.CodPosizione == this.posStim[i].CodPosizione).map(x => x.Tempo).reduce((a,b) => a + b);
       this.sd.EditAddStimolato(this.posStim[i])
-        .subscribe(res => {}, errorCode => this.errmsg = errorCode)
+        .subscribe()
     }
 
     for(let i in this.dipendato) {
       this.sd.EditAddDipendato(this.dipendato[i])
-        .subscribe(res => {}, errorCode => this.errmsg = errorCode)
+        .subscribe()
     }
 
     for(let i in this.bins) {
       this.sd.EditAddBin(this.bins[i])
-        .subscribe(res => {}, errorCode => this.errmsg = errorCode)
+        .subscribe()
     }
-
-    this.tested = true;
   }
   //#endregion
 

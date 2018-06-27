@@ -297,6 +297,23 @@ export class ServiceDbAcadProvider {
     }
   }
 
+  GetAllTestSessione(CodSessione : number):Observable<Test[]>{
+    if(CodSessione != undefined) {
+      let headers = new HttpHeaders();
+      headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+      const params = new HttpParams()
+        .set('CodSessione', CodSessione.toString())
+      const options = {
+          headers,
+          params
+        };
+      return this.http
+        .get(this.server + "/GetAllTestSessione", options)
+        .map((response: Response) => response)
+        .catch(this.handleError);
+    }
+  }
+
   EditAddTest(test : Test):Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.set('Content-Type', 'application/json; charset=utf-8');
@@ -314,6 +331,22 @@ export class ServiceDbAcadProvider {
       };
     return this.http
       .put(this.server + "/EditAddTest", null, options)
+      .map((response: Response) => response)
+      .catch(this.handleError);
+  }
+
+  DeleteTestSoggetto(test : Test):Observable<any> {
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    const params = new HttpParams()
+      .set('CodSoggetto', test.CodSoggetto.toString())
+      .set('CodSessione', test.CodSessione.toString())
+    const options = {
+        headers,
+        params
+      };
+    return this.http
+      .delete(this.server + "/DeleteTestSoggetto", options)
       .map((response: Response) => response)
       .catch(this.handleError);
   }
@@ -439,6 +472,12 @@ export class ServiceDbAcadProvider {
         .map((response: Response) => response)
         .catch(this.handleError);
     }
+  }
+
+  GetEsperimentiUsati():Observable<Esperimento[]>{
+    return this.http
+      .get(this.server + "/GetEsperimentiUsati")
+      .map(res => res as Esperimento[]  );
   }
 
   GetEsperimentoByNome(nomeEsperimento : string, email : string):Observable<Esperimento>{
@@ -745,6 +784,7 @@ export class ServiceDbAcadProvider {
       .set('CodSessione', stim.CodSessione.toString())
       .set('CodPosizione', stim.CodPosizione.toString())
       .set('CodStimolo', stim.CodStimolo.toString())
+      .set('Tempo', stim.Tempo.toString())
     const options = {
         headers,
         params
@@ -795,20 +835,20 @@ export class ServiceDbAcadProvider {
   //#endregion
 
   //#region clear POS
-  ClearPOS(CodEsperimento : number):Observable<any> {
-    let headers = new HttpHeaders();
-    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
-    const params = new HttpParams()
-      .set('CodEsperimento', CodEsperimento.toString())
-    const options = {
-        headers,
-        params
-      };
-    return this.http
-      .delete(this.server + "/ClearPOS", options)
-      .map((response: Response) => response)
-      .catch(this.handleError);
-  }
+  // ClearPOS(CodEsperimento : number):Observable<any> {
+  //   let headers = new HttpHeaders();
+  //   headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+  //   const params = new HttpParams()
+  //     .set('CodEsperimento', CodEsperimento.toString())
+  //   const options = {
+  //       headers,
+  //       params
+  //     };
+  //   return this.http
+  //     .delete(this.server + "/ClearPOS", options)
+  //     .map((response: Response) => response)
+  //     .catch(this.handleError);
+  // }
   //#endregion
 
   //#region MetodiGenerali

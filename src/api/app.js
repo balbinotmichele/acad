@@ -383,7 +383,7 @@ app.put('/EditAddDipendato', function(req, res){
               data.push(req.query.CodSessione);
               data.push(req.query.CodVariabile);
               data.push(req.query.Valore);
-              connection.query(sQuery2, data, function(err, rows, fields) {
+              connection.query(sQuery, data, function(err, rows, fields) {
             if (err)
             {
               res.sendStatus(500);
@@ -442,6 +442,27 @@ app.get("/GetTestSessione",function(req,res){
   })
 });
 
+app.get("/GetAllTestSessione",function(req,res){
+  connection= mysql.createConnection(sConnection)	;
+  connection.connect(function(err){
+    if (!err){
+      var sQuery="SELECT * FROM Test WHERE CodSessione = ?";
+      var data=[];
+      data.push(req.query.CodSessione);
+      connection.query(sQuery,data,function(err,rows,fileds){
+        if (err)
+            res.sendStatus(500);
+        else
+            res.setHeader('Access-Control-Allow-Origin','*');
+        res.json(rows);
+        // connection.end(function(err) {
+        //   console.log('Chiuso')
+        // });
+      })
+    }
+  })
+});
+
 app.put('/EditAddTest', function(req, res){
 	connection = mysql.createConnection(sConnection);
 	connection.connect(function(err){
@@ -478,6 +499,29 @@ app.put('/EditAddTest', function(req, res){
     }
   });
 });
+
+app.delete('/DeleteTestSoggetto', function(req, res) {
+	connection = mysql.createConnection(sConnection);
+    connection.connect(function(err){
+    if(!err) {
+      var sQuery = "DELETE FROM Test WHERE CodSoggetto = ? AND CodSessione = ?";
+      var data=[];
+      data.push(req.query.CodSoggetto);
+      data.push(req.query.CodSessione);
+      connection.query(sQuery, data, function(err, rows, fields) {
+        if (err)
+          res.sendStatus(500);
+        else   {
+          res.status(200).send({status: 200, Message: "Del OK" });
+				}
+      });
+    }
+    else {
+      console.log("Error connecting database ... ");
+      res.sendStatus(500);
+    }
+  });
+});
 //#endregion
 
 //#region subjects
@@ -485,7 +529,7 @@ app.get("/GetSoggettiBySessione",function(req,res){
   connection= mysql.createConnection(sConnection)	;
   connection.connect(function(err){
     if (!err){
-      var sQuery="SELECT So.CodSoggetto, So.NomeSoggetto, So.Descrizione  FROM Test T, Sessione S, Soggetto So WHERE T.CodSessione = S.CodSessione AND T.CodSoggetto = So.CodSoggetto AND CodSessione = ?;";
+      var sQuery="SELECT So.CodSoggetto, So.NomeSoggetto, So.Descrizione  FROM Test T, Sessione S, Soggetto So WHERE T.CodSessione = S.CodSessione AND T.CodSoggetto = So.CodSoggetto AND T.CodSessione = ?;";
       var data=[];
       data.push(req.query.CodSessione);
       connection.query(sQuery,data,function(err,rows,fileds){
@@ -667,6 +711,25 @@ app.get("/GetEsperimenti",function(req,res){
         // });
       })
     }
+  })
+});
+
+app.get("/GetEsperimentiUsati",function(req,res){
+  connection= mysql.createConnection(sConnection)	;
+	connection.connect(function(err){
+		if (!err){
+			var sQuery="select * from esperimento e where (Select codsessione from sessione s where (select codsessione from test where test.CodSessione = s.CodSessione and e.CodEsperimento = s.CodEsperimento))";
+			connection.query(sQuery,function(err,rows,fileds){
+        if (err)
+            res.sendStatus(500);
+        else
+            res.setHeader('Access-Control-Allow-Origin','*');
+        res.json(rows);
+        // connection.end(function(err) {
+        //   console.log('Chiuso')
+        // });
+      })
+		}
   })
 });
 
@@ -1201,25 +1264,26 @@ app.put('/EditAddStimolato', function(req, res){
   connection = mysql.createConnection(sConnection);
 	connection.connect(function(err){
     if(!err) {
-      var sQuery="UPDATE Bin SET CodStimolo = ? WHERE CodSoggetto = ? AND CodSessione = ? AND CodPosizione = ?;";
-      var data = [];
-      data.push(req.query.CodStimolo);
-      data.push(req.query.CodSoggetto);
-      data.push(req.query.CodSessione);
-      data.push(req.query.CodPosizione);
-      connection.query(sQuery, data, function(err, rows, fields) {
-        if (err)
-        {
-          res.sendStatus(500);
-        }
-        else if (rows.affectedRows==0)
-        {
-          var sQuery2="INSERT INTO Stimolato(CodSoggetto, CodSessione, CodPosizione, CodStimolo) VALUES(?,?,?,?)"
+      // var sQuery="UPDATE Stimolato SET CodStimolo = ? WHERE CodSoggetto = ? AND CodSessione = ? AND CodPosizione = ?;";
+      // var data = [];
+      // data.push(req.query.CodStimolo);
+      // data.push(req.query.CodSoggetto);
+      // data.push(req.query.CodSessione);
+      // data.push(req.query.CodPosizione);
+      // connection.query(sQuery, data, function(err, rows, fields) {
+      //   if (err)
+      //   {
+      //     res.sendStatus(500);
+      //   }
+      //   else if (rows.affectedRows==0)
+      //   {
+          var sQuery2="INSERT INTO Stimolato(CodSoggetto, CodSessione, CodPosizione, CodStimolo, Tempo) VALUES(?,?,?,?,?)"
           var data = [];
           data.push(req.query.CodSoggetto);
           data.push(req.query.CodSessione);
           data.push(req.query.CodPosizione);
           data.push(req.query.CodStimolo);
+          data.push(req.query.Tempo);
           connection.query(sQuery2, data, function(err, rows, fields) {
             if (err)
             {
@@ -1234,19 +1298,19 @@ app.put('/EditAddStimolato', function(req, res){
               // connection.end(function(err) {
         //   console.log('Chiuso')
         // });
-          });
-        }
-        else
-        {
-          res.status(200).send({
-            status:  200,
-            Message: "Mod OK",
-            data:    req.query
-          });
-          // connection.end(function(err) {
-        //   console.log('Chiuso')
-        // });
-        }
+      //     });
+      //   }
+      //   else
+      //   {
+      //     res.status(200).send({
+      //       status:  200,
+      //       Message: "Mod OK",
+      //       data:    req.query
+      //     });
+      //     // connection.end(function(err) {
+      //   //   console.log('Chiuso')
+      //   // });
+      //   }
       });
     }
     else {
@@ -1339,42 +1403,42 @@ app.put('/EditAddBin', function(req, res){
 //#endregion
 
 //#region clear POS
-app.delete('/ClearPOS', function(req, res) {
-	connection = mysql.createConnection(sConnection);
-    connection.connect(function(err){
-    if(!err) {
-      var sQuery = "DELETE FROM Posizione WHERE CodEsperimento = ?";
-      var data=[];
-      data.push(req.query.CodEsperimento);
-      connection.query(sQuery, data, function(err, rows, fields) {
-        if (err)
-          res.sendStatus(500);
-        else   {
-          // res.status(200).send({status: 200, Message: "Del OK" });
-          var sQuery = "DELETE FROM Orientamento WHERE CodEsperimento = ?";
-          connection.query(sQuery, data, function(err, rows, fields) {
-            if (err)
-              res.sendStatus(500);
-            else   {
-              // res.status(200).send({status: 200, Message: "Del OK" });
-              var sQuery = "DELETE FROM Stimolo WHERE CodEsperimento = ?";
-              connection.query(sQuery, data, function(err, rows, fields) {
-                if (err)
-                  res.sendStatus(500);
-                else   {
-                  res.status(200).send({status: 200, Message: "Del OK" });
-                }
-              });
-            }
-          });
-				}
-      });
-    }
-    else {
-      console.log("Error connecting database ... ");
-      res.sendStatus(500);
-    }
-  });
-});
+// app.delete('/ClearPOS', function(req, res) {
+// 	connection = mysql.createConnection(sConnection);
+//     connection.connect(function(err){
+//     if(!err) {
+//       var sQuery = "DELETE FROM Posizione WHERE CodEsperimento = ?";
+//       var data=[];
+//       data.push(req.query.CodEsperimento);
+//       connection.query(sQuery, data, function(err, rows, fields) {
+//         if (err)
+//           res.sendStatus(500);
+//         else   {
+//           // res.status(200).send({status: 200, Message: "Del OK" });
+//           var sQuery = "DELETE FROM Orientamento WHERE CodEsperimento = ?";
+//           connection.query(sQuery, data, function(err, rows, fields) {
+//             if (err)
+//               res.sendStatus(500);
+//             else   {
+//               // res.status(200).send({status: 200, Message: "Del OK" });
+//               var sQuery = "DELETE FROM Stimolo WHERE CodEsperimento = ?";
+//               connection.query(sQuery, data, function(err, rows, fields) {
+//                 if (err)
+//                   res.sendStatus(500);
+//                 else   {
+//                   res.status(200).send({status: 200, Message: "Del OK" });
+//                 }
+//               });
+//             }
+//           });
+// 				}
+//       });
+//     }
+//     else {
+//       console.log("Error connecting database ... ");
+//       res.sendStatus(500);
+//     }
+//   });
+// });
 //#endregion
 app.listen(3000);

@@ -12,6 +12,7 @@ export class MenuComponent {
   @Output() testChange: EventEmitter<boolean> = new EventEmitter();
   @Output() cardChange: EventEmitter<boolean> = new EventEmitter();
   @Output() experimentChange: EventEmitter<boolean> = new EventEmitter();
+  @Output() dataChange: EventEmitter<boolean> = new EventEmitter();
 
   @Output() logout: EventEmitter<boolean> = new EventEmitter();
 

@@ -1,5 +1,3 @@
-import { DateTime } from "ionic-angular/umd";
-
 export class Utente {
   Nome : string = "";
   Cognome : string = "";
@@ -130,4 +128,45 @@ export class Bin {
   Note : string = "";
 
   constructor() {}
+}
+
+export class Data {
+  NomeSoggetto : string = "";
+  Descrizione : string = "";
+  NomeEsperimento : string = "";
+  DataEsperimento : string = "";
+  Posizionato : PosData[] = [];
+  Dipendato : DipData[] = [];
+  Bin : BinData[] = [];
+  Stimolato : StimData[] = [];
+  Orientato : OriData[] = [];
+  PrimaScelta : string ="";
+  Latenza : number = 0;
+  Transizioni : number = 0;
+}
+
+export class PosData {
+  NomePosizione : string = "";
+  Tempo : number = 0;
+}
+
+export class OriData {
+  NomeOrientamento : string = "";
+  Tempo : number = 0;
+}
+
+export class DipData {
+  NomeVariabile : string = "";
+  Valore : number = 0;
+}
+
+export class StimData {
+  // NomePosizione : string = "";
+  NomeStimolo : string = "";
+  Tempo : number = 0;
+}
+
+export class BinData {
+  NumBin : string = "";
+  Note : number = 0;
 }

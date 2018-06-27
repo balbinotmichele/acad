@@ -15,6 +15,7 @@ export class HomePage {
   test : boolean;
   experiment : boolean;
   card : boolean;
+  data : boolean;
 
   choice : string;
 
@@ -44,6 +45,7 @@ export class HomePage {
         case "test": this.onTestClick(true); break;
         case "exp": this.onExperimentClick(true); break;
         case "home": this.onHomeClick(true); break;
+        case "data": this.onDataClick(true); break;
         case "logout": this.LogOut(); break;
         default: this.onHomeClick(true); break;
       }
@@ -63,6 +65,7 @@ export class HomePage {
       this.test = true;
       this.card = false;
       this.experiment = false;
+      this.data = false;
     });
   }
 
@@ -77,6 +80,7 @@ export class HomePage {
       this.card = true;
       this.test = false;
       this.experiment = false;
+      this.data = false;
     });
   }
 
@@ -91,6 +95,22 @@ export class HomePage {
       this.experiment = true;
       this.card = false;
       this.test = false;
+      this.data = false;
+    });
+  }
+
+  onDataClick(data : boolean) {
+    const loader = this.loadingCtrl.create({
+      content: "Please wait...",
+      duration: this.duration
+    });
+
+    loader.present();
+    loader.onDidDismiss(() => {
+      this.experiment = false;
+      this.card = false;
+      this.test = false;
+      this.data = true;
     });
   }
 

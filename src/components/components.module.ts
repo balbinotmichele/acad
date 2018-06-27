@@ -7,6 +7,7 @@ import { TestsHomeComponent } from './tests-home/tests-home';
 import { ExperimentsHomeComponent } from './experiments-home/experiments-home';
 import { MenuComponent } from "./menu/menu";
 import { SessionModalPage } from './session-modal/session-modal';
+import { DataHomeComponent } from './data-home/data-home';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { SessionModalPage } from './session-modal/session-modal';
     TestsHomeComponent,
     ExperimentsHomeComponent,
     SessionModalPage,
+    DataHomeComponent,
   ],
   imports: [
     IonicModule
@@ -32,6 +34,7 @@ import { SessionModalPage } from './session-modal/session-modal';
     TestsHomeComponent,
     ExperimentsHomeComponent,
     SessionModalPage,
+    DataHomeComponent,
   ]
 
   })

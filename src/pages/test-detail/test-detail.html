@@ -16,7 +16,6 @@
             </ion-card-title>
             <p>Session: <b>{{this.session.NomeSessione}}</b></p>
             <p>Esperiment: <b> {{this.exp.NomeEsperimento}}</b></p>
-            <p>Tests: <b>{{this.tests.length}}</b></p>
           </ion-card-content>
         </ion-card>
       </ion-col>
@@ -69,7 +68,7 @@
             </ion-card-title>
             <div padding>
               <!-- <button ion-button block color="secondary" (click)="EditSoggetto()" *ngIf="selectedSubject" style="margin-bottom: 12px">Edit subject</button> -->
-              <button ion-button block color="danger2" (click)="DeleteTestSoggetto()" [disabled]="DisableDeleteTest() || newSubject || testing || !this.end" *ngIf="selectedSubject" style="margin-bottom: 12px">Delete subject's test (this session only)</button>
+              <button ion-button block color="danger2" (click)="DeleteTestSoggetto()" [disabled]="DisableDeleteTest() || newSubject || testing || !this.tested" *ngIf="selectedSubject" style="margin-bottom: 12px">Delete subject's test (this session only)</button>
               <button ion-button block color="danger" (click)="DeleteSoggetto()" [disabled]="newSubject || testing" *ngIf="selectedSubject">Delete subject (all the sessions)</button>
             </div>
             <!-- <div *ngIf="edit">
@@ -118,11 +117,11 @@
                     <ion-select  interface="popover" style="width: 50%" placeholder="Stimulus" [(ngModel)]="item.CodStimolo" [disabled]="newSubject || testing">
                       <ion-option ngDefaultControl *ngFor="let stim of stimuli" value="{{stim.CodStimolo}}">{{stim.NomeStimolo}}</ion-option>
                     </ion-select>
-                    <ion-icon item-end color="danger" name="trash" (click)="posStim.splice(i, 1)" margin-left [hidden]="newSubject || testing"></ion-icon>
+                    <ion-icon item-end color="danger" name="trash" (click)="posStim.splice(i, 1)" margin-left [hidden]="newSubject || testing || tested"></ion-icon>
                   </ion-item>
                 </div>
                 <div text-right>
-                  <button ion-button (click)="AddStimPos()" [disabled]="newSubject || testing" margin-top>Add Position-Stimulus pair</button>
+                  <button ion-button (click)="AddStimPos()" [disabled]="newSubject || testing" margin-top [disabled]="this.tested">Add Position-Stimulus pair</button>
                 </div>
               </ion-card-content>
             </ion-card>
@@ -159,7 +158,7 @@
                 <ion-card-title>
                   {{this.timer}}
                 </ion-card-title>
-                <button ion-button block (click)="StartTest()" [disabled]="newSubject" *ngIf="(!pause && !testing && !this.end) || (pause && testing && !this.end) || this.tested" >Start Test</button>
+                <button ion-button block (click)="StartTest()" [disabled]="newSubject" *ngIf="((!pause && !testing && !this.end) || (pause && testing && !this.end)) && !this.tested" >Start Test</button>
                 <button ion-button block (click)="PauseTest()" [disabled]="newSubject" *ngIf="(!pause && testing && !this.end)">Pause Test</button>
                 <button ion-button block color="danger2" (click)="ResetTest()" [disabled]="newSubject || !pause" *ngIf="(!pause && testing && !this.end) || (pause && testing && !this.end)">Reset Test</button>
               </ion-card-content>
@@ -253,10 +252,10 @@
                   <ion-card-content text-center>
                     <ion-row>
                       <ion-col col-sm-12 col-md-12 col-lg-3 col-xl-3>
-                        <button color="light" ion-button (click)="CancelTest()" style="width: 100%" [disabled]="!this.end && !this.tested">Cancel</button>
+                        <button color="light" ion-button (click)="CancelTest()" style="width: 100%" [disabled]="(!this.end && !this.tested) || newSubject">Cancel</button>
                       </ion-col>
                       <ion-col col-sm-12 col-md-12 col-lg-9 col-xl-9>
-                        <button ion-button (click)="SaveTest()" style="width: 100%" [disabled]="!this.end && !this.tested">Save</button>
+                        <button ion-button (click)="SaveTest()" style="width: 100%" [disabled]="(!this.end && !this.tested) || newSubject">Save</button>
                       </ion-col>
                     </ion-row>
                   </ion-card-content>

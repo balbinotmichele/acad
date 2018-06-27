@@ -2,9 +2,10 @@
 
 
 <div id="dash_content" padding>
-  <cards *ngIf="this.card && !this.test && !this.experiment && !this.newExperiment" (testClick)="this.testsClick.emit(true)" (expClick)="this.experimentsClick.emit(true)"></cards>
-  <tests-home *ngIf="this.test && !this.experiment && !this.card && !this.newExperiment" ></tests-home>
-  <experiments-home *ngIf="this.experiment && !this.test && !this.card && !this.newExperiment" (experimentClick)="ExperimentClicked($event)"></experiments-home>
+  <cards *ngIf="this.card && !this.test && !this.experiment && !this.newExperiment && !this.data" (testClick)="this.testsClick.emit(true)" (expClick)="this.experimentsClick.emit(true)" (dataClick)="this.dataClick.emit(true)"></cards>
+  <tests-home *ngIf="this.test && !this.experiment && !this.card && !this.newExperiment && !this.data" ></tests-home>
+  <experiments-home *ngIf="this.experiment && !this.test && !this.card && !this.newExperiment && !this.data" (experimentClick)="ExperimentClicked($event)"></experiments-home>
+  <data-home *ngIf="this.data && !this.experiment && !this.test && !this.card && !this.newExperiment"></data-home>
 </div>
 
 <!-- <ion-footer>

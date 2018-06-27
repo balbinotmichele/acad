@@ -1,3 +1,4 @@
+import { NavController } from 'ionic-angular';
 import { Component, EventEmitter, Output } from '@angular/core';
 
 /**
@@ -13,7 +14,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 export class CardsComponent {
   @Output() testClick : EventEmitter<boolean> = new EventEmitter();
   @Output() expClick : EventEmitter<boolean> = new EventEmitter();
+  @Output() dataClick : EventEmitter<boolean> = new EventEmitter();
 
-  constructor() {}
-
+  constructor(public navCtrl : NavController) {}
 }
