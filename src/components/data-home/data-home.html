@@ -1,0 +1,115 @@
+<ion-row>
+  <ion-col col-sm-12 col-md-12 col-lg-3 col-xl-3>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-content>
+            <ion-card-title>
+              Select a session
+            </ion-card-title>
+            <ion-list inset style="max-height: 400px; overflow: auto">
+              <ion-item *ngFor="let item of array" >
+                <ion-label>{{item.Nome}}</ion-label>
+                <ion-checkbox value="item.Nome" [(ngModel)]="item.Checked" (ionChange)="Select(item, checked)"></ion-checkbox>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-content>
+            <ion-card-title>
+              Download the selected data
+            </ion-card-title>
+            <a ion-button block (click)="DownloadCSV()" [href]="downloadCsvHref" [download]="dataName">Download CSV</a>
+            <a ion-button block (click)="DownloadJSON()" [href]="downloadJsonHref" [download]="dataName">Download JSON</a>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-col>
+  <ion-col col-sm-12 col-md-12 col-lg-9 col-xl-9>
+    <ion-card *ngIf="this.dati">
+      <ion-card-content style="overflow: auto;">
+        <ion-card-title>
+          Data
+        </ion-card-title>
+        <ion-grid style="border: 0.05px solid grey; width: 1600px; max-height: 600px; overflow: auto" text-center>
+          <ion-row style="border: 0.05px solid grey; font-weight: bold; margin-right: 16px">
+            <ion-col style="border: 0.05px solid grey;">
+              Subject
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0">
+              Experiment
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0">
+              Date
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0" *ngFor="let item of positions" >
+              {{item.NomePosizione}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0" *ngFor="let item of orient" >
+              {{item.NomeOrientamento}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0" *ngFor="let item of indieVar" >
+              {{item.NomeVariabile}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0" *ngFor="let item of stim" >
+              {{item.NomeStimolo}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0" *ngFor="let item of bins" >
+              Bin n. {{item.NumBin}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0">
+              First choice
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0">
+              Latency
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0">
+              Transitions
+            </ion-col>
+          </ion-row>
+          <ion-row style="border: 0; margin-right: 16px" *ngFor="let item of dati">
+            <ion-col style="border: 0.05px solid grey; border-left: 0">
+              {{item.NomeSoggetto}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0">
+              {{item.NomeEsperimento}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0">
+              {{item.DataEsperimento}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0" *ngFor="let posIt of item.Posizionato">
+              {{posIt.Tempo}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0" *ngFor="let oriIt of item.Orientato">
+              {{oriIt.Tempo}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0" *ngFor="let dipIt of item.Dipendato">
+              {{dipIt.Valore}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0" *ngFor="let stimIt of item.Stimolato">
+              {{stimIt.Tempo}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0" *ngFor="let binIt of item.Bin">
+              {{binIt.Note}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0">
+              {{item.PrimaScelta}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey; border-left: 0">
+              {{item.Latenza}}
+            </ion-col>
+            <ion-col style="border: 0.05px solid grey">
+              {{item.Transizioni}}
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </ion-col>
+</ion-row>
